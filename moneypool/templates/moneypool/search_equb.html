@@ -1,0 +1,8 @@
+{% extends 'moneypool/base.html' %}
+{% block content %}
+<form action="{% url 'moneypool:search_equb' %}" method="post"}>
+    {% csrf_token %}
+    <input type="text" name="equb_name">
+    <input type="submit" value="search">
+</form>
+{% endblock %}}

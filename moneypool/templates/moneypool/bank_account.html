@@ -1,0 +1,9 @@
+{% extends 'moneypool/base.html' %}
+{% block content %}
+<form action="{% url 'moneypool:create_client' user_id %}" method="post">
+    {% csrf_token %}
+    <input type="text" name="bank_account" id="account_detail">
+    <label for="account_detail"> enter bank account amount</label><br>
+    <input type="submit" name="submit">
+</form>
+{% endblock %}}

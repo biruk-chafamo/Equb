@@ -1,0 +1,15 @@
+{% extends 'moneypool/base.html' %}
+{% block content %}
+<h3>All equbs</h3>
+<ul>
+    {% for equb in equbs %}
+        <li> {{equb.name}} </li>
+    {% endfor %}
+</ul>
+<h3>Received equbs</h3>
+<ul>
+    {% for equb in received_equbs %}
+        <li> {{equb.name}} </li>
+    {% endfor %}
+</ul>
+{% endblock %}

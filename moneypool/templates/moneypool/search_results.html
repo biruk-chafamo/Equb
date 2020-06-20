@@ -1,0 +1,10 @@
+{% extends 'moneypool/base.html' %}
+{% block content %}
+<ul>
+    {% for equb in equbs %}
+        <li>
+            <a href="{% url 'moneypool:join_equb' equb.name %}">{{equb.name}}</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}}
