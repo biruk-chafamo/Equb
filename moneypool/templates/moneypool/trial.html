@@ -1,0 +1,57 @@
+{% extends 'moneypool/new_base.html' %}
+<!--equb cards displayed in my equbs-->
+{% block content %}
+{% for equb in equbs %}
+<div class="col-md-6 mr-auto">
+  <div class="card card-nav-tabs">
+    <div class="card-header card-header-info">
+      <div class="nav-tabs-navigation">
+        <div class="nav-tabs-wrapper">
+          <ul class="nav nav-tabs" data-tabs="tabs">
+            <li class="nav-item">
+
+              <a class="nav-link active" href="#{{equb.name}}" data-toggle="tab">
+                {{equb.name}}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#details{{equb.name}}" data-toggle="tab">
+                Details
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#bid{{equb.name}}" data-toggle="tab">
+                Bid
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card-body ">
+      <div class="tab-content text-center">
+        <div class="tab-pane active" id="{{equb.name}}">
+            <p> {{equb.name}} </p>
+        </div>
+        <div class="tab-pane" id="details{{equb.name}}">
+          <p> I think that&#x2019;s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at. I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus. I think that&#x2019;s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at.</p>
+        </div>
+        <div class="tab-pane" id="bid{{equb.name}}">
+            <form action="{% url 'moneypool:add_bid' %}" method="post">
+                {% csrf_token %}
+              <div class="form-group no-border">
+                <input type="text" class="form-control" name="bid_amount"  placeholder="Enter bid">
+                <input type="hidden" class="form-control" name="equb_name" value="{{equb.name}}">
+              </div>
+              <button type="submit" class="btn btn-primary btn-round">
+                  <i class="material-icons"></i>submit bid
+              </button>
+          </form>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Tabs with icons on Card -->
+</div>
+{% endfor %}
+{% endblock%}

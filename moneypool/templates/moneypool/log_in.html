@@ -7,10 +7,10 @@
 <body>
     <h2>log in</h2>
 
-    <form action="{% url 'moneypool:log_in' %}", method="post">
+    <form action="{% url 'moneypool:log_in' %}" method="post">
         {% csrf_token %}
         {{ form }}
-        <input type="submit" value="log in">
+        <button type="submit">Log in</button>
     </form>
 </body>
 </html>

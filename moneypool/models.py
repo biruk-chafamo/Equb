@@ -26,34 +26,6 @@ class Equb(models.Model):
     def __str__(self):
         return str(self.name)
 
-    # def select_winner(self):
-    #     all_members = self.clients.all()
-    #     received = self.received.all()
-    #     not_received = all_members.difference(received)
-    #     winner = random.choice(not_received)
-    #     self.received.add(winner)
-    #     return winner
-    #
-    # def update_winner_account(self):
-    #     amount = self.value
-    #     winner = self.select_winner()
-    #     winner.bank_account += amount
-    #     winner.save()
-    #
-    # def collect_money(self):
-    #     all_members = self.clients.all()
-    #     capacity = self.capacity
-    #     amount = self.value
-    #     deduction = amount / capacity
-    #     for member in all_members:
-    #         member.bank_account -= deduction
-    #         member.save()
-
-
-# class Member(models.Model):
-#     client = models.OneToOneField(to=Client, on_delete=models.CASCADE)
-#     received = models.BooleanField(default=False)
-
 
 class BalanceManager(models.Model):
     equb = models.OneToOneField(to=Equb, on_delete=models.CASCADE, related_name='balance_manager')
@@ -61,44 +33,59 @@ class BalanceManager(models.Model):
     last_managed = models.DateTimeField(null=True, blank=True)
     finished_rounds = models.IntegerField(blank=True, default=0)
     started = models.BooleanField(default=False)
+    ended = models.BooleanField(default=False)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return str(self.equb.name) + ' balance manager'
 
-    def __select_winner(self):
-        equb = self.equb
-        all_members = equb.clients.all()
-        received = self.received.all()
-        not_received = all_members.difference(received)
-        if not_received:
-            winner = random.choice(not_received)
-            self.received.add(winner)
-            return winner
-        else:
-            return None
-
     def update_winner_account(self):
+        """
+        adds the total value of equb to winners account minus the percentage
+        of this amount equal to what was bid
+        """
         equb = self.equb
-        amount = equb.value
-        winner = self.__select_winner()
+        highest_bid = self.equb.bid.highest_bid  # this is in percentage
+        amount = equb.value * (1 - highest_bid / 100)  # amount to award highest bidder
+        winner = self.equb.bid.select_winner()
         if winner:
-            winner.bank_account += amount
+            winner.bank_account += amount  # amount = equb value if highest bid = 0
             winner.save()
 
     def collect_money(self):
+
+        """
+        deducts the correct amount from equb members.
+        Distributes the highest bid to those who haven't
+        received their equbs yet. Those who received their
+        equb won't benefit from the bid.
+        """
+
         equb = self.equb
         all_members = equb.clients.all()
+        not_received = all_members.difference(self.received.all())
         capacity = equb.capacity
+        highest_bid = self.equb.bid.highest_bid   # this is in percentage, eg 4%
         amount = equb.value
-        deduction = amount / capacity
-        if equb.capacity > self.finished_rounds:
-            for member in all_members:
-                member.bank_account -= deduction
+
+        received_deduction = amount / capacity
+        not_received_deduction = (amount * (1 - highest_bid / 100)) / not_received.count()
+
+        if capacity > self.finished_rounds:  # ensures equb is not finished
+            for member in not_received:
+                member.bank_account -= not_received_deduction
                 member.save()
+            for member in self.received.all():
+                member.bank_account -= received_deduction
+                member.save()
+
+            # marks the "self.eneded" field to True when all members have received their equb
+            if capacity == self.finished_rounds + 1:
+                self.__terminate_manager()
+
             self.__update_finished_rounds()
-        self.__update_last_managed()
+            self.__update_last_managed()
 
     def __update_last_managed(self):
         self.last_managed = timezone.now()
@@ -108,3 +95,46 @@ class BalanceManager(models.Model):
         self.finished_rounds += 1
         self.save()
 
+    def __terminate_manager(self):
+        self.ended = True
+        self.save()
+
+
+class Bid(models.Model):
+    equb = models.OneToOneField(to=Equb, on_delete=models.CASCADE, related_name='bid')
+    started = models.BooleanField(default=False, )
+    highest_bid = models.DecimalField(max_digits=5, decimal_places=2, default=0, blank=True)
+    highest_bidder = models.ForeignKey(to=Client, on_delete=models.CASCADE, blank=True, null=True)
+    all_bids = JSONField(default=dict, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.equb.name) + ' bidding'
+
+    def select_winner(self):
+        """
+        Selects highest bidder as winner.
+        If there is no bid, winner is randomly selected from
+        those who haven't received their equbs yet
+        """
+
+        equb = self.equb
+        all_members = equb.clients.all()
+        received = equb.balance_manager.received.all()
+        not_received = all_members.difference(received)
+        if not_received:
+            if equb.bid.started is True and equb.bid.highest_bidder not in received:
+                winner = equb.bid.highest_bidder
+            else:
+                winner = random.choice(not_received)
+            equb.balance_manager.received.add(winner)
+            return winner
+
+    def reset_bid(self):
+        """
+        Must be called after each cycle of equb to reset bid
+        """
+        self.started = False
+        self.highest_bid = 0
+        self.highest_bidder = None
+        self.all_bids = {}
+        self.save()

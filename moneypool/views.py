@@ -8,6 +8,7 @@ from django.urls import reverse
 from .forms import *
 from .tasks import *
 from django.utils import timezone
+import logging
 
 
 def index(request):
@@ -19,23 +20,22 @@ def sign_up(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            username = request.POST.get('username')
-            password = request.POST.get('password')
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
             user = authenticate(username=username, password=password)
             login(request, user)
-            return HttpResponseRedirect(reverse('moneypool:create_client', args=[request.user.id]))
-    else:
-        form = UserCreationForm()
-        return render(request, 'moneypool/sign_up.html', {'form': form})
+            return HttpResponseRedirect(reverse('moneypool:create_client'))
+    form = UserCreationForm()
+    return render(request, 'moneypool/sign_up.html', {'form': form})
 
 
-def create_client(request, user_id):
-    user = User.objects.get(id=user_id)
+def create_client(request):
     if request.method == 'POST':
-        client = Client.objects.create(user=user, bank_account=request.POST['bank_account'])
+        client = Client(user=request.user, bank_account=float(request.POST['bank_account']))
+        client.save()
         return HttpResponseRedirect(reverse('moneypool:home'))
     else:
-        return render(request, 'moneypool/bank_account.html', {'user_id': user_id})
+        return render(request, 'moneypool/bank_account.html')
 
 
 def log_in(request):
@@ -48,13 +48,11 @@ def log_in(request):
             if user is not None:
                 login(request, user)
                 return HttpResponseRedirect(reverse('moneypool:home'))
-            else:
-                return HttpResponseRedirect(reverse('moneypool:log_in'))
         else:
-            return render(request, 'moneypool/log_in.html', {'form': form})
+            return HttpResponseRedirect(reverse('moneypool:log_in'))
     else:
         form = AuthenticationForm()
-        return render(request, 'moneypool/log_in.html', {'form': form})
+        return render(request, 'moneypool/log_in.html', {'form':form})
 
 
 def log_out(request):
@@ -70,14 +68,84 @@ def home(request):
     return render(request, 'moneypool/home.html', {'username': user.username, 'equb_count': equb_count})
 
 
+# @login_required
+# def home(request):
+#     user = request.user
+#     client = user.client
+#     equbs = client.equbs.all()
+#     return render(request, 'moneypool/trial.html', {'username': user.username, 'equbs': equbs})
+
+
 @login_required
 def my_equbs(request):
-    user = request.user
-    client = Client.objects.get(user=user)
-    equbs = client.equbs.all()
-    received_equb_managers = client.received_equb_managers.all()
-    received_equbs = [manager.equb for manager in received_equb_managers]
-    return render(request, 'moneypool/my_equbs.html', {'equbs': equbs, 'received_equbs': received_equbs})
+    client = Client.objects.get(user=request.user)
+    if request.method == 'POST':
+        equb_name = request.POST['equb_name']
+        return HttpResponseRedirect(reverse('moneypool:add_bid', args=[equb_name]))
+    else:
+        equbs = client.equbs.all()
+        pending_equbs = []
+        inactive_equbs = []
+        received_equbs = []
+        unreceived_equbs = []
+        for equb in equbs:
+            # use the database instead of appending to list (to improve)
+            if not equb.balance_manager.started:
+                pending_equbs.append(equb)
+            elif equb.balance_manager.started and not equb.balance_manager.ended:
+                if client in equb.balance_manager.received.all():
+                    received_equbs.append(equb)
+                else:
+                    unreceived_equbs.append(equb)
+            elif equb.balance_manager.started and equb.balance_manager.ended:
+                inactive_equbs.append(equb)
+
+        # received_equb_managers = client.received_equb_managers.all()
+        # received_equbs = [manager.equb for manager in received_equb_managers]
+        context = {
+            'pending_equbs': pending_equbs,
+            'inactive_equbs': inactive_equbs,
+            'received_equbs': received_equbs,
+            'unreceived_equbs': unreceived_equbs
+        }
+        return render(request, 'moneypool/my_equbs.html', context)
+
+
+@login_required
+def add_bid(request, equb_name):
+    client = Client.objects.get(user=request.user)
+    equb = Equb.objects.get(name=equb_name)
+    if request.method == 'POST':
+        bid_amount = float(request.POST['bid_amount'])
+        if not equb.bid.started:
+            equb.bid.started = True
+        equb.bid.all_bids[str(request.user.username)] = bid_amount  # registering the bid with username
+        highest_bid = equb.bid.highest_bid
+        if highest_bid < bid_amount:
+            equb.bid.highest_bid = bid_amount
+            equb.bid.highest_bidder = client
+        equb.bid.save()
+        return HttpResponseRedirect(reverse('moneypool:my_equbs'))
+    else:
+        return render(request, 'moneypool/bid.html', {'equb': equb, 'bid': equb.bid})
+
+
+# def add_bid(request):
+#
+#     if request.method == 'POST':
+#         client = Client.objects.get(user=request.user)
+#         equb = Equb.objects.get(name=request.POST['equb_name'])
+#         bid_amount = float(request.POST['bid_amount'])
+#         if not equb.bid.started:
+#             equb.bid.started = True
+#         equb.bid.all_bids[str(request.user.username)] = bid_amount  # registering the bid with username
+#         highest_bid = equb.bid.highest_bid
+#         if highest_bid < bid_amount:
+#             equb.bid.highest_bid = bid_amount
+#             equb.bid.highest_bidder = client
+#         equb.bid.save()
+#         return HttpResponseRedirect(reverse('moneypool:my_equbs'))
+
 
 
 @login_required
@@ -86,7 +154,8 @@ def create_equb(request):
         form = CreateEqubForm(data=request.POST)
         if form.is_valid():
             equb = form.save()
-            BalanceManager(equb=equb).save()  # creating a balance manager instance for this equ
+            BalanceManager(equb=equb).save()  # creating a balance manager instance for this equb
+            Bid(equb=equb).save()  # creating a bid instance for this equb
             request.user.client.equbs.add(equb)
             return HttpResponseRedirect(reverse('moneypool:home'))
         else:
@@ -115,7 +184,7 @@ def join_equb(request, equb_name):
     else:
         return HttpResponseRedirect(reverse('moneypool:home'))
 
-
+# ..............include in balance manager model.................
 @login_required
 def begin_equb(request, equb_name):
     equb = Equb.objects.get(name=equb_name)
@@ -126,5 +195,5 @@ def begin_equb(request, equb_name):
     equb.balance_manager.save()
 
     # starting the "task" of updating client accounts
-    update_client_accounts(equb_name, schedule=timezone.now(), repeat=equb.cycle.seconds, repeat_until=end_date+timezone.timedelta(seconds=2))
+    update_client_accounts(equb_name, schedule=equb.cycle.seconds, repeat=equb.cycle.seconds, repeat_until=end_date+timezone.timedelta(seconds=2))
     return HttpResponseRedirect(reverse('moneypool:home'))
