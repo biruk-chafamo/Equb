@@ -2,7 +2,7 @@
 {% block content %}
 <form action="{% url 'moneypool:create_equb' %}" method="post">
     {% csrf_token %}
-    {{ form }}
+    {{ form. }}
     <input type="submit" value="create equb">
 </form>
 {% endblock %}}

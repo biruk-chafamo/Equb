@@ -12,16 +12,51 @@
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
   <!-- CSS Files -->
-  <link href="/static//moneypool/css/material-kit.css" rel="stylesheet" />
-  <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+  <link href="/static/moneypool/css/material-kit.css" rel="stylesheet" />
+  <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'/>
+<style>
+.modal-backdrop {
+  display: none !important;
+}
+.modal-open .modal {
+    width: 300px;
+    margin: 0 auto;
+}
+body.modal-open {
+    overflow: auto !important;
+}
+.modal-backdrop
+{
+    opacity:0 !important;
+}
+.modal.in .modal-dialog {
+    position:fixed;
+    bottom:15px;
+    right:15px;
+    margin:0px;
+}
+.checkboxes {
+      text-align:center;
+     }
+
+    .checkboxes input{
+      margin: 0px 0px 0px 0px;
+     }
+
+     .checkboxes label{
+       margin: 0px 20px 0px 3px !important;
+     }
+"
+</style>
 </head>
 
 <body class="sidebar-collapse">
-    <nav class="navbar navbar-color-on-scroll  fixed-top navbar-expand-lg" color-on-scroll="100">
+    <nav class="navbar fixed-top navbar-expand-lg" color-on-scroll="100" style="border-radius:0px 0px 10px 10px;">
       <div class="container">
         <div class="navbar-translate">
           <a class="navbar-brand">
-            Equb </a>
+            <b>Equb</b>
+          </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="sr-only">Toggle navigation</span>
             <span class="navbar-toggler-icon"></span>
@@ -33,101 +68,76 @@
 
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="bx bx-money bx-border"></i> My Equbs
+              <a href="{% url 'moneypool:my_equbs' %}" class="nav-link">
+<!--                <i class="bx bx-money bx-border"></i> -->
+                My Equbs
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'moneypool:create_equb' %}" class="nav-link">
+<!--                <i class="bx bx-add-to-queue bx-border"></i> -->
+                Create
               </a>
             </li>
             <li class="nav-item">
               <a href="#" class="nav-link">
-                <i class="bx bx-add-to-queue bx-border"></i> Create
+<!--                <i class="bx bx-group bx-border"></i> -->
+                Friends
               </a>
             </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="bx bx-git-merge bx-border"></i> Join
-              </a>
+
+<!--             <li class="nav-item dropdown">-->
+<!--              <a class="nav-link dropdown-toggle" href="javascript:;" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                profile-->
+<!--              </a>-->
+<!--              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">-->
+<!--                <form class="form-inline" action="{% url 'moneypool:log_out' %}" method="get">-->
+<!--                  <button type="submit" class="btn btn-white btn-just-icon ">-->
+<!--                     <i class="bx bx-exit bx-border"></i>-->
+<!--                  </button>-->
+<!--              </form>-->
+<!--                <a class="dropdown-item" href="javascript:;">Action</a>-->
+<!--                <a class="dropdown-item" href="javascript:;">Another action</a>-->
+<!--                <a class="dropdown-item" href="javascript:;">Something else here</a>-->
+<!--              </div>-->
+<!--            </li>-->
+
+           <li>
+              <form class="form-inline" action="{% url 'moneypool:log_out' %}" method="get">
+                <button type="submit" class="btn btn-white btn-just-icon ">
+                   <i class="bx bx-exit bx-border"></i>
+                </button>
+            </form>
             </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="bx bx-group bx-border"></i> Friends
-              </a>
-            </li>
-          </ul>
-          <form class="form-inline">
+
+          <form class="form-inline" action="{% url 'moneypool:search_equb' %}" method="get">
             <div class="form-group no-border">
-              <input type="text" class="form-control" placeholder="Search">
+              <input type="text" name="equb_name" class="form-control" placeholder="Search equb">
             </div>
             <button type="submit" class="btn btn-white btn-just-icon btn-round">
                 <i class="material-icons">search</i>
             </button>
         </form>
+
+            </ul>
+
         </div>
       </div>
    </nav>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+<!--    <div class="main main-raised" style="border-radius:50px;">-->
+
+    {% block content %}
+    {% endblock %}
+
+<!--    </div>-->
 
 
-  <!-- <div class="page-header header-filter" data-parallax="true" style="background-image: url('../assets/img/city-profile.jpg');"></div> -->
-  <div class="main">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 ml-auto mr-auto">
-        <div class="profile-tabs">
-          <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" href="#pending" role="tab" data-toggle="tab">
-                <i class="material-icons">camera</i> Pending
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#works" role="tab" data-toggle="tab">
-                <i class="material-icons">palette</i> Active
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#favorite" role="tab" data-toggle="tab">
-                <i class="material-icons">favorite</i> History
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="tab-content tab-space">
-      <div class="tab-pane active text-center gallery" id="pending">
-        <div class="row">
-           {% block content %}
-           {% endblock %}
-        </div>
-      </div>
-      <div class="tab-pane text-center gallery" id="works">
-        <div class="row">
-          <div class="col-md-3 ml-auto">
-            <img src="../assets/img/examples/olu-eletu.jpg" class="rounded">
-            <img src="../assets/img/examples/clem-onojeghuo.jpg" class="rounded">
-            <img src="../assets/img/examples/cynthia-del-rio.jpg" class="rounded">
-          </div>
-          <div class="col-md-3 mr-auto">
-            <img src="../assets/img/examples/mariya-georgieva.jpg" class="rounded">
-            <img src="../assets/img/examples/clem-onojegaw.jpg" class="rounded">
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane text-center gallery" id="favorite">
-        <div class="row">
-          <div class="col-md-3 ml-auto">
-            <img src="../assets/img/examples/mariya-georgieva.jpg" class="rounded">
-            <img src="../assets/img/examples/studio-3.jpg" class="rounded">
-          </div>
-          <div class="col-md-3 mr-auto">
-            <img src="../assets/img/examples/clem-onojeghuo.jpg" class="rounded">
-            <img src="../assets/img/examples/olu-eletu.jpg" class="rounded">
-            <img src="../assets/img/examples/studio-1.jpg" class="rounded">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
 <!--  <footer class="footer footer-default">-->
 <!--    <div class="container">-->
 <!--      <nav class="float-left">-->
@@ -164,6 +174,7 @@
 <!--    </div>-->
 <!--  </footer>-->
   <!--   Core JS Files   -->
+
   <script src="/static/moneypool/js/core/jquery.min.js" type="text/javascript"></script>
   <script src="/static/moneypool/js/core/popper.min.js" type="text/javascript"></script>
   <script src="/static/moneypool/js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
@@ -173,8 +184,9 @@
   <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
   <script src="/static/moneypool/js/plugins/nouislider.min.js" type="text/javascript"></script>
   <!--  Google Maps Plugin    -->
-  <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
-  <script src="/static/moneypool/js/material-kit.js?v=2.0.7" type="text/javascript"></script>
+
+<!--   Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
+  <script type="text/javascript" src="/static/moneypool/js/material-kit.js?v=2.0.7" ></script>
 </body>
 
 </html>

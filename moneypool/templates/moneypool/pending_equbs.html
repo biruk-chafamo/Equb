@@ -1,0 +1,99 @@
+{% for equb in pending_equbs %}
+    <div class="col-md-4 mr-auto">
+      <div class="card card-nav-tabs" style="border-radius:0px 0px 70px 70px; background-color: rgb(230, 255, 255);">
+        <div class="card-header card-header-info">
+          <div class="nav-tabs-navigation" >
+            <div class="nav-tabs-wrapper">
+              <ul class="nav nav-tabs"  data-tabs="tabs">
+                <li class="nav-item" >
+
+                  <a class="nav-link active" href="#{{equb.name}}_status" data-toggle="tab">
+                    {{equb.name}}
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#{{equb.name}}_invite" data-toggle="tab">
+                    Invite
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card-body ">
+          <div class="tab-content text-center">
+            <div class="tab-pane active" id="{{equb.name}}_status">
+                <ul class="list-group list-group-flush" >
+                  <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-success">
+                     <h5><b>Amount</b></h5>
+                      <span class="badge badge-success">${{equb.value}}</span>
+                  </li>
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
+                      <h5><b>Cycle</b></h5>
+                      <span class="badge badge-dark">
+                          {{equb.get_cycle}}
+                      </span>
+                  </li>
+                     <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-info">
+                      <h5><b>Capacity</b></h5>
+                      <span class="badge badge-info">
+                          {{equb.capacity}}
+                      </span>
+                  </li>
+<!--                  <a href="#" class="list-group-item list-group-item-action list-group-item-success">A simple success list group item</a>-->
+<!--                  <a href="#" class="list-group-item list-group-item-action list-group-item-danger">A simple danger list group item</a>-->
+<!--                  <a href="#" class="list-group-item list-group-item-action list-group-item-warning">A simple warning list group item</a>-->
+<!--                  <a href="#" class="list-group-item list-group-item-action list-group-item-info">A simple info list group item</a>-->
+<!--                  <a href="#" class="list-group-item list-group-item-action list-group-item-light">A simple light list group item</a>-->
+<!--                  <a href="#" class="list-group-item list-group-item-action list-group-item-dark">A simple dark list group item</a>-->
+                </ul>
+
+                <div class="progress" >
+                <div class="progress-bar bg-info" role="progressbar" style="width: {{equb.balance_manager.percent_joined}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            <div class="card-footer text-muted justify-content-center">
+
+                {{equb.balance_manager.current_spots}} spot/s remaining
+              </div>
+            </div>
+            <div class="tab-pane" id="{{equb.name}}_invite">
+
+                <form action="#" method="post">
+                    {% csrf_token %}
+                     <ul class="list-group list-group-flush "
+                         style="
+                         border-radius: 10px 10px 10px 10px;
+                            max-height: 282px;
+                            margin-bottom: 10px;
+                            overflow:scroll;
+                            overflow-x: hidden;
+                            -webkit-overflow-scrolling: touch;">
+
+                      {% for friend in client.friends.all %}
+                         <li class="list-group-item d-flex justify-content-between align-items-center
+                                    {% cycle 'list-group-item-info' 'list-group-item-success' %}">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" value="{{friend.user.username}}">
+                                   <b style="color: rgb(51, 51, 51);">{{friend.user.username}}</b>
+                                <span class="circle" style="background-color: white;">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                       </li>
+                      {% endfor %}
+                     </ul>
+                  <button type="submit" class="btn btn-primary btn-round">
+                      <i class="material-icons"></i>Invite
+                  </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- End Tabs with icons on Card -->
+    </div>
+{% endfor %}

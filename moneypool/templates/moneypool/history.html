@@ -1,0 +1,30 @@
+{% for equb in inactive_equbs %}
+    <div class="col-md-6 mr-auto">
+      <div class="card card-nav-tabs">
+        <div class="card-header card-header-info">
+          <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+              <ul class="nav nav-tabs" data-tabs="tabs">
+                <li class="nav-item">
+
+                  <a class="nav-link active" href="#{{equb.name}}_status" data-toggle="tab">
+                    {{equb.name}}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card-body ">
+          <div class="tab-content text-center">
+            <div class="tab-pane active" id="{{equb.name}}_status">
+                <p> {{equb.name}} profit: 4% </p>
+                <br>
+                <p> value: {{equb.value}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Tabs with icons on Card -->
+    </div>
+{% endfor %}

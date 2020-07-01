@@ -1,0 +1,164 @@
+{% extends 'moneypool/new_base.html' %}
+<!--equb cards displayed in my equbs-->
+{% block content %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 ml-auto mr-auto">
+        <div class="profile-tabs">
+          <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" href="#pending" role="tab" data-toggle="tab">
+                 Pending
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#active" role="tab" data-toggle="tab">
+                 Active
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#history" role="tab" data-toggle="tab">
+                 History
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="tab-content tab-space">
+      <div class="tab-pane active text-center gallery" id="pending">
+        <div class="row">
+           {% include 'moneypool/pending_equbs.html' %}
+        </div>
+      </div>
+      <div class="tab-pane text-center gallery" id="active">
+        <div class="row">
+            {% include 'moneypool/active_equbs.html' %}
+        </div>
+      </div>
+      <div class="tab-pane text-center gallery" id="history">
+        <div class="row">
+            {% include 'moneypool/history.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+<div id="create_equb_modal" class="modal  fade in" role="dialog" data-backdrop="static"
+     style=" margin: 0px; padding: 20px; ">
+  <div class="modal-dialog ">
+    <form action="{% url 'moneypool:create_equb' %}" method="post">
+
+      {% csrf_token %}
+
+    <div class="modal-content" style="background-color: rgb(230, 255, 230); border: 5px solid rgba(0, 51, 0, .1);">
+      <div class="modal-body" style="margin: 0px; padding: 20px;">
+
+        <div class="row">
+          <div class="col-md-6">
+
+              <div class="form-group">
+                <div class="form-check form-check-radio checkboxes">
+                  <br>
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="privacy_status" value="private" >
+                      private
+                    <span class="circle">
+                      <span class="check"></span>
+                    </span>
+                  </label>
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="privacy_status" value="public" >
+                      public
+                  <span class="circle">
+                    <span class="check"></span>
+                  </span>
+                  </label>
+              </div>
+            </div>
+
+          <div class="form-row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <span class="form-label">Name</span>
+                <input class="form-control" type="text" name="name" maxlength="150" required="" id="id_name" placeholder="equb name">
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <span class="form-label">Cycle</span>
+                <input class="form-control" type="text" name="cycle" value="1 00:00:00" required="" id="id_cycle">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="col-md-6">
+              <div class="form-group">
+              <span class="form-label">Capacity</span>
+              <input class="form-control" type="number" name="capacity" step="1" required="" id="id_capacity" placeholder="1">
+              </div>
+            </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <span class="form-label">Value</span>
+              <input class="form-control" type="number" name="value" step="0.01" required="" id="id_value" placeholder="0">
+            </div>
+          </div>
+          </div>
+
+
+          </div>
+
+        <div class="col-md-6">
+
+          <ul class="list-group list-group-flush "
+              style="
+              max-height: 350px;
+              max-width: 230px;
+              margin-bottom: 0px;
+              overflow:scroll;
+              overflow-x: hidden;
+              -webkit-overflow-scrolling: touch;">
+
+            {% for friend in client.friends.all %}
+              <li class="list-group-item d-flex justify-content-between align-items-center
+              {% cycle 'list-group-item-info' 'list-group-item-success' %}">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="{{friend.user.username}}">
+                    <b style="color: rgb(51, 51, 51);">{{friend.user.username}}</b>
+                    <span class="circle" style="background-color: white;">
+                      <span class="check"></span>
+                    </span>
+                </label>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+
+
+          </div>
+          </div>
+
+      </div>
+      <div class="modal-footer" style="margin: 0px; padding: 10px;">
+        <button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
+        <button type="submit" class=" btn btn-primary ">Create</button>
+
+      </div>
+
+    </div>
+    </form>
+  </div>
+</div>
+<button class="btn btn-lg btn-primary btn round btn-just-icon mr-auto"
+        style="position: fixed; bottom: 20px; right: 20px;"
+        data-toggle="modal" data-target="#create_equb_modal">
+  <i class="material-icons">add</i></i></button>
+
+
+{% endblock %}
