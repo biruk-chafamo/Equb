@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="3703e66a-a1aa-4fcf-a470-377b7606bd49" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../migrations/0023_auto_20200710_1745.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../MyUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../MyUtils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../templates/moneypool/active_equbs.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../templates/moneypool/active_equbs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../templates/moneypool/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../templates/moneypool/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../templates/moneypool/new_base.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../templates/moneypool/new_base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../templates/moneypool/new_create_equb.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../templates/moneypool/new_create_equb.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../templates/moneypool/new_home.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../templates/moneypool/new_home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../templates/moneypool/new_log_in.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../templates/moneypool/new_log_in.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../templates/moneypool/new_my_equbs.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../templates/moneypool/new_my_equbs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../templates/moneypool/pending_equbs.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../templates/moneypool/pending_equbs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="ProjectId" id="1eeetnKf3IPxstN4ceZ5pgj1iO0" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3703e66a-a1aa-4fcf-a470-377b7606bd49" name="Default Changelist" comment="" />
+      <created>1594686702928</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1594686702928</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.js" />
+  </component>
+</project>
