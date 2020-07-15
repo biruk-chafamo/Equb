@@ -2,163 +2,182 @@
 <!--equb cards displayed in my equbs-->
 {% block content %}
 
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 ml-auto mr-auto">
-        <div class="profile-tabs">
-          <ul class="nav nav-pills nav-pills-icons justify-content-center" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" href="#pending" role="tab" data-toggle="tab">
-                 Pending
+
+<script>
+
+  changeTabTo("{{current_tab}}")
+
+</script>
+
+
+
+
+<div class="container " style="margin-bottom: 30px; margin-top: 0px; ">
+  <div class="row justify-content-md-center">
+    <div class="col-md-5 ">
+      <div class="main" style=" padding: 5px ;border-radius: 20px; background-color: #fff; box-shadow:3px 3px 3px grey">
+        <div class="nav nav-tabs justify-content-center" style="border-radius: 50px" >
+<!--          <ul class=" nav nav-pills mynavs justify-content-center"  role="tablist">-->
+<!--            <li class="nav-item mynav">-->
+              <a class="btn nav-item nav-link active" href="#pending" role="tab" data-toggle="tab">
+              Pending
               </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#active" role="tab" data-toggle="tab">
-                 Active
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+              <a class="btn nav-item nav-link" href="#active" role="tab" data-toggle="tab">
+              Active
               </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#history" role="tab" data-toggle="tab">
-                 History
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+              <a class="btn  nav-item nav-link" href="#history" role="tab" data-toggle="tab">
+              History
               </a>
-            </li>
-          </ul>
+<!--            </li>-->
+<!--          </ul>-->
+
+
         </div>
       </div>
     </div>
-    <div class="tab-content tab-space">
-      <div class="tab-pane active text-center gallery" id="pending">
-        <div class="row">
-           {% include 'moneypool/pending_equbs.html' %}
-        </div>
-      </div>
-      <div class="tab-pane text-center gallery" id="active">
-        <div class="row">
-            {% include 'moneypool/active_equbs.html' %}
-        </div>
-      </div>
-      <div class="tab-pane text-center gallery" id="history">
-        <div class="row">
-            {% include 'moneypool/history.html' %}
-        </div>
-      </div>
-    </div>
-  </div>
-<div id="create_equb_modal" class="modal  fade in" role="dialog" data-backdrop="static"
-     style=" margin: 0px; padding: 20px; ">
-  <div class="modal-dialog ">
-    <form action="{% url 'moneypool:create_equb' %}" method="post">
-
-      {% csrf_token %}
-
-    <div class="modal-content" style="background-color: rgb(230, 255, 230); border: 5px solid rgba(0, 51, 0, .1);">
-      <div class="modal-body" style="margin: 0px; padding: 20px;">
-
-        <div class="row">
-          <div class="col-md-6">
-
-              <div class="form-group">
-                <div class="form-check form-check-radio checkboxes">
-                  <br>
-                  <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="privacy_status" value="private" >
-                      private
-                    <span class="circle">
-                      <span class="check"></span>
-                    </span>
-                  </label>
-                  <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="privacy_status" value="public" >
-                      public
-                  <span class="circle">
-                    <span class="check"></span>
-                  </span>
-                  </label>
-              </div>
-            </div>
-
-          <div class="form-row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <span class="form-label">Name</span>
-                <input class="form-control" type="text" name="name" maxlength="150" required="" id="id_name" placeholder="equb name">
-              </div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <span class="form-label">Cycle</span>
-                <input class="form-control" type="text" name="cycle" value="1 00:00:00" required="" id="id_cycle">
-              </div>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="col-md-6">
-              <div class="form-group">
-              <span class="form-label">Capacity</span>
-              <input class="form-control" type="number" name="capacity" step="1" required="" id="id_capacity" placeholder="1">
-              </div>
-            </div>
-
-          <div class="col-md-6">
-            <div class="form-group">
-              <span class="form-label">Value</span>
-              <input class="form-control" type="number" name="value" step="0.01" required="" id="id_value" placeholder="0">
-            </div>
-          </div>
-          </div>
-
-
-          </div>
-
-        <div class="col-md-6">
-
-          <ul class="list-group list-group-flush "
-              style="
-              max-height: 350px;
-              max-width: 230px;
-              margin-bottom: 0px;
-              overflow:scroll;
-              overflow-x: hidden;
-              -webkit-overflow-scrolling: touch;">
-
-            {% for friend in client.friends.all %}
-              <li class="list-group-item d-flex justify-content-between align-items-center
-              {% cycle 'list-group-item-info' 'list-group-item-success' %}">
-                <div class="form-check">
-                  <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" value="{{friend.user.username}}">
-                    <b style="color: rgb(51, 51, 51);">{{friend.user.username}}</b>
-                    <span class="circle" style="background-color: white;">
-                      <span class="check"></span>
-                    </span>
-                </label>
-                </div>
-              </li>
-            {% endfor %}
-          </ul>
-
-
-          </div>
-          </div>
-
-      </div>
-      <div class="modal-footer" style="margin: 0px; padding: 10px;">
-        <button type="button" class="btn btn-default " data-dismiss="modal">Close</button>
-        <button type="submit" class=" btn btn-primary ">Create</button>
-
-      </div>
-
-    </div>
-    </form>
   </div>
 </div>
-<button class="btn btn-lg btn-primary btn round btn-just-icon mr-auto"
-        style="position: fixed; bottom: 20px; right: 20px;"
-        data-toggle="modal" data-target="#create_equb_modal">
-  <i class="material-icons">add</i></i></button>
+  <div class="tab-content tab-space ">
+    <div class="tab-pane active text-center gallery" id="pending">
+      <div class="container" style="
+      box-shadow:3px 3px 3px grey; background-color: #fff; border-radius: 40px 40px 40px 40px; padding:30px;">
+        <div class="row">
+          <div class="col-md-7 mr-auto">
+            <h3 class='' style="text-align: left">Pending Equbs</h3>
+          </div>
+          <div class="col-md-5" style="text-align: right">
+            <p>
+            <button class="btn btn-primary"  type="button" data-toggle="collapse" data-target="#remaining_equb" aria-expanded="false" aria-controls="remaining_equb">
+              <i class="bx bx-icon bx-down-arrow-alt" id="pending_toggle"></i>
+            </button>
+
+            </p>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5">
+            <h5 class="text-muted" style="text-align: left"> Waiting for people to join. Send an invite!</h5>
+          </div>
+        </div>
+        <hr>
+
+          {% include 'moneypool/pending_equbs.html' %}
+    </div>
+    </div>
+    <div class="tab-pane text-center gallery" id="active">
+      <div class="container" style="
+      box-shadow:3px 3px 3px grey; background-color: #fff; border-radius: 40px 40px 40px 40px; padding:30px;">
+        <div class="row">
+          <div class="col-md-7 mr-auto">
+            <h3 class='' style="text-align: left">Active Equbs</h3>
+          </div>
+          <div class="col-md-5" style="text-align: right">
+            <p>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#activecollapse" aria-expanded="false" aria-controls="activecollapse">
+              <i class="bx bx-icon bx-down-arrow-alt"></i>
+            </button>
+            </p>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-5">
+            <h5 class="text-muted" style="text-align: left"> Place bid. Collect Equbs.</h5>
+          </div>
+        </div>
+        <hr>
+          {% include 'moneypool/active_equbs.html' %}
+    </div>
+    </div>
+    <div class="tab-pane text-center gallery" id="history">
+      <div class=" col-md-11 mr-auto ml-auto main main-raised" style="margin-top: 0px; padding: 20px; border-radius: 40px">
+        <div class="row">
+          <div class="col-md-5">
+            <p class="h2" style="margin-bottom: 0"> Past Equbs</p>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          {% include 'moneypool/history.html' %}
+        </div>
+    </div>
+  </div>
+</div>
+
+<button class="btn btn-lg btn-primary button-round" type="button" data-toggle="collapse" data-target="#create_collapse" aria-expanded="false"
+        aria-controls="create_collapse" style=" position: fixed; bottom: 20px; right: 20px; ">
+  <i class="bx bx-icon bx-plus"></i>
+</button>
+
+<div class="collapse " style="padding:0px; position: fixed; bottom: 100px; right: 20px; z-index:2000" id="create_collapse">
+ <form action="{% url 'moneypool:create_equb' %}" method="post">
+   {% csrf_token %}
+  <div class="card" style="border-radius: 20px; position: fixed; bottom: 30px; right:10px; margin: 0px; padding: 20px; padding-top:0; background-color: rgba(230, 230, 230, 1); border: 5px solid rgb(123, 168, 183); width: 18rem; ">
+
+    <div class="card-body">
+        <div class="row justify-content-end">
+            <div class="col-4">
+                <button class="btn btn-lg btn-primary button-round" type="button" data-toggle="collapse" data-target="#create_collapse" aria-expanded="false"
+                    aria-controls="create_collapse">
+                    <i class="bx bx-icon bx-x-circle"></i>
+                </button>
+            </div>
+        </div>
+              <div class="row justify-content-start form-group">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="private" required="" id="private_create" value="True">
+                  <label class="form-check-label" for="private_create">private</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="private" required="" id="Public_create" value="False">
+                  <label class="form-check-label" for="Public_create">public</label>
+                </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <span class="form-label">Name</span>
+                    <input class="form-control" type="text" name="name" maxlength="150" required="" id="id_name" placeholder="equb name">
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <span class="form-label">Cycle</span>
+                    <input class="form-control" type="text" name="cycle" value="1 00:00:00" required="" id="id_cycle">
+                  </div>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <span class="form-label">Capacity</span>
+                    <input class="form-control" type="number" name="capacity" step="1" required="" id="id_capacity" placeholder="1">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <span class="form-label">Value</span>
+                    <input class="form-control" type="number" name="value" step="0.01" required="" id="id_value" placeholder="0">
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-primary button-round" type="submit" value="create" style="border-radius: 0px 0px 10px 10px ; color: white; background-color: rgb(123, 168, 183)">
+                create
+              </button>
+            </div>
+
+ </form>
+</div>
+
 
 
 {% endblock %}

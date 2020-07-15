@@ -1,5 +1,6 @@
 from background_task import background
 from .models import *
+import datetime
 import logging
 
 
@@ -20,4 +21,8 @@ def update_client_accounts(equb_name):
     equb.balance_manager.collect_money()
     logging.warning('collected money')
 
-    equb.bid.reset_bid()  # Once winner is selected and money collected, bidding resets
+    # logging.warning('resetting bid')
+    # equb.bid.reset_bid()  # Once winner is selected and money collected, bidding resets
+    # logging.warning('bid reset')
+    if equb.balance_manager.finished_rounds < equb.capacity:
+        update_client_accounts(equb_name, schedule=datetime.datetime.now()+equb.cycle)

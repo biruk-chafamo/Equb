@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from . import views
 
 app_name = "moneypool"
@@ -15,6 +16,9 @@ urlpatterns = [
     # path('<equb_name>/add_bid', views.add_bid, name='add_bid'),
     path('add_bid', views.add_bid, name='add_bid'),
     path('<equb_name>/join_equb', views.join_equb, name='join_equb'),
+    path('accept_invite', views.accept_invite, name='accept_invite'),
     path('create_equb', views.create_equb, name='create_equb'),
     path('<equb_name>/begin_equb', views.begin_equb, name='begin_equb'),
+    path('invite', views.invite, name='invite'),
+    path('pin_equb', views.pin_equb, name='pin_equb'),
 ]

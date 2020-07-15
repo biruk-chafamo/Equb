@@ -1,65 +1,254 @@
-{% for equb in active_equbs %}
-    <div class="col-md-4 mr-auto">
-      <div class="card card-nav-tabs " style="height: 25rem">
-        <div class="card-header card-header-info">
-          <div class="nav-tabs-navigation">
-            <div class="nav-tabs-wrapper">
-              <ul class="nav nav-tabs" data-tabs="tabs">
-                <li class="nav-item">
+<!--{% for equb in active_equbs %}-->
+<!--    <div class="col-md-4 mr-auto">-->
+<!--      <div class="card card-nav-tabs " style="height: 25rem">-->
+<!--        <div class="card-header card-header-info">-->
+<!--          <div class="nav-tabs-navigation">-->
+<!--            <div class="nav-tabs-wrapper">-->
+<!--              <ul class="nav nav-tabs" data-tabs="tabs">-->
+<!--                <li class="nav-item">-->
 
-                  <a class="nav-link active" href="#{{equb.name}}_status" data-toggle="tab">
-                    {{equb.name}}
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#{{equb.name}}_bid" data-toggle="tab">
-                    Bid
-                  </a>
-                </li>
-              </ul>
-            </div>
+<!--                  <a class="nav-link active" href="#{{equb.name}}_status" data-toggle="tab">-->
+<!--                    {{equb.name}}-->
+<!--                  </a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                  <a class="nav-link" href="#{{equb.name}}_bid" data-toggle="tab">-->
+<!--                    Bid-->
+<!--                  </a>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="card-body ">-->
+<!--          <div class="tab-content text-center">-->
+<!--            <div class="tab-pane active" id="{{equb.name}}_status">-->
+<!--                <ul class="list-group list-group-flush" >-->
+<!--                  <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-success">-->
+<!--                     <h5><b>Amount</b></h5>-->
+<!--                      <span class="badge badge-success">${{equb.value}}</span>-->
+
+<!--                  </li>-->
+<!--                    <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-primary">-->
+<!--                     <h5><b>Next Round</b></h5>-->
+<!--                      <span class="badge badge-primary">{{equb.balance_manager.till_next_round}}</span>-->
+
+<!--                  </li>-->
+<!--                </ul>-->
+<!--                <div class="progress" >-->
+<!--                <div class="progress-bar bg-info" role="progressbar" style="width: {{equb.balance_manager.percent_completed}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="tab-pane" id="{{equb.name}}_bid">-->
+<!--                <ul class="list-group list-group-flush" >-->
+<!--                  <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-success">-->
+<!--                     <h5><b>Highest Bid</b></h5>-->
+<!--                      <span class="badge badge-success">${{equb.bid.highest_bid}}%</span>-->
+<!--                  </li>-->
+<!--                </ul>-->
+<!--                <form action="{% url 'moneypool:add_bid' %}" method="post">-->
+<!--                    {% csrf_token %}-->
+<!--                  <div class="form-group no-border">-->
+<!--                    <input type="text" class="form-control" name="bid_amount"  placeholder="Place Bid %">-->
+<!--                    <input type="hidden" class="form-control" name="equb_name" value="{{equb.name}}">-->
+<!--                  </div>-->
+<!--                  <button type="submit" class="btn btn-primary btn-round">-->
+<!--                      <i class="material-icons"></i>Bid-->
+<!--                  </button>-->
+<!--              </form>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      &lt;!&ndash; End Tabs with icons on Card &ndash;&gt;-->
+<!--    </div>-->
+<!--{% endfor %}-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="card-group">
+{% for equb in active_equbs|slice:"0:3" %}
+    <div class="col-md-4">
+  <div class="card card-nav-tabs" style=" margin-left: 0px; margin-right: 0px; box-shadow:2px 2px 2px grey; margin-bottom: 20px; border-radius:20px 20px 20px 20px; background-color: rgba(200, 200, 200, .6);">
+    <div class=" card-header" style="border-radius:10px 10px 10px 10px; background-color: rgb(123, 168, 183)">
+      <div class="  nav-tabs-navigation">
+        <div class="  nav-tabs-wrapper">
+          <ul class="  nav nav-tabs"  data-tabs="tabs">
+            <li class="  nav-item" >
+              <a class=" nav-link active" href="#{{equb.name}}_status" data-toggle="tab">
+              {{equb.name}}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#{{equb.name}}_bid" data-toggle="tab">
+              Bid
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card-body" style="padding: 4px">
+      <div class="tab-content text-center">
+        <div class="tab-pane active" id="{{equb.name}}_status">
+          <ul class="list-group list-group-flush" >
+            <li class="list-group-item d-flex justify-content-between align-items-center"
+              style="background-color: rgba(102, 102, 102, 0.6)">
+              <b>Amount</b>
+              <span class="badge badge-lg badge-success"
+                style="padding: 10px">${{equb.value}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
+                <b>Next Round</b>
+                <span class="badge badge-primary">{{equb.balance_manager.print_delta}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center"
+              style="background-color: rgba(230, 230, 230);">
+              <b>Capacity</b>
+              <span class="badge badge-lg badge-info" style="padding: 10px">
+              {{equb.capacity}}
+              </span>
+            </li>
+          </ul>
+          <div class="progress" >
+            <div class="progress-bar bg-info" role="progressbar" style="width: {{equb.balance_manager.percent_completed}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+           <div class="card-footer text-muted justify-content-center"
+               style="background-color: rgba(200, 200, 200, .6); border-radius: 0 0 10px 10px">
+                Received/not-Received
           </div>
         </div>
-        <div class="card-body ">
-          <div class="tab-content text-center">
-            <div class="tab-pane active" id="{{equb.name}}_status">
-                <ul class="list-group list-group-flush" >
-                  <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-success">
-                     <h5><b>Amount</b></h5>
-                      <span class="badge badge-success">${{equb.value}}</span>
-
-                  </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-primary">
-                     <h5><b>Next Round</b></h5>
-                      <span class="badge badge-primary">{{equb.balance_manager.till_next_round}}</span>
-
-                  </li>
-                </ul>
-                <div class="progress" >
-                <div class="progress-bar bg-info" role="progressbar" style="width: {{equb.balance_manager.percent_completed}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </div>
-            <div class="tab-pane" id="{{equb.name}}_bid">
+        <div class="tab-pane" id="{{equb.name}}_bid">
                 <ul class="list-group list-group-flush" >
                   <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-success">
                      <h5><b>Highest Bid</b></h5>
-                      <span class="badge badge-success">${{equb.bid.highest_bid}}%</span>
+                      <span class="badge badge-success" id="{{equb.id}}_highest_bid">{{equb.get_highest_bid}}%</span>
                   </li>
                 </ul>
-                <form action="{% url 'moneypool:add_bid' %}" method="post">
+                <form action="" method="">
                     {% csrf_token %}
                   <div class="form-group no-border">
-                    <input type="text" class="form-control" name="bid_amount"  placeholder="Place Bid %">
-                    <input type="hidden" class="form-control" name="equb_name" value="{{equb.name}}">
+                    <input type="text" class="bid-amount {{equb.id}} form-control" name="bid_amount"  placeholder="Place Bid %">
+                    <input type="hidden" class="form-control" name="equb_id" value="{{equb.id}}">
                   </div>
-                  <button type="submit" class="btn btn-primary btn-round">
+                  <button type="submit" id="{{equb.id}}" class="add-bid-button btn btn-primary btn-round">
                       <i class="material-icons"></i>Bid
                   </button>
               </form>
             </div>
-          </div>
-        </div>
       </div>
-      <!-- End Tabs with icons on Card -->
     </div>
-{% endfor %}
+  </div>
+        </div>
+</div>
+  <!-- End Tabs with icons on Card -->
+
+<!--{% endfor %}-->
+<!--</div>-->
+<!--<div class="collapse " id="activecollapse">-->
+<!--    <div class=" card-group">-->
+<!--    {% for equb in active_equbs|slice:"3:8" %}-->
+<!--       <div class="col-md-4">-->
+<!--  <div class="card card-nav-tabs" style=" margin-left: 0px; margin-right: 0px; box-shadow:2px 2px 2px grey; margin-bottom: 20px; border-radius:20px 20px 20px 20px; background-color: rgba(200, 200, 200, .6);">-->
+<!--    <div class=" card-header" style="border-radius:10px 10px 10px 10px; background-color: rgb(123, 168, 183)">-->
+<!--      <div class="  nav-tabs-navigation">-->
+<!--        <div class="  nav-tabs-wrapper">-->
+<!--          <ul class="  nav nav-tabs"  data-tabs="tabs">-->
+<!--            <li class="  nav-item" >-->
+<!--              <a class=" nav-link active" href="#{{equb.name}}_status" data-toggle="tab">-->
+<!--              {{equb.name}}-->
+<!--              </a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a class="nav-link" href="#{{equb.name}}_bid" data-toggle="tab">-->
+<!--              Bid-->
+<!--              </a>-->
+<!--            </li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="card-body " style="padding: 4px">-->
+<!--      <div class="tab-content text-center">-->
+<!--        <div class="tab-pane active" id="{{equb.name}}_status">-->
+<!--          <ul class="list-group list-group-flush" >-->
+<!--            <li class="list-group-item d-flex justify-content-between align-items-center"-->
+<!--              style="background-color: rgba(102, 102, 102, 0.6)">-->
+<!--              <b>Amount</b>-->
+<!--              <span class="badge badge-lg badge-success"-->
+<!--                style="padding: 10px">${{equb.value}}</span>-->
+<!--            </li>-->
+<!--            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">-->
+<!--              <h5><b>Next Round</b></h5>-->
+<!--                <span class="badge badge-primary">{{equb.balance_manager.print_delta}}</span>-->
+<!--            </li>-->
+<!--            <li class="list-group-item d-flex justify-content-between align-items-center"-->
+<!--              style="background-color: rgba(230, 230, 230);">-->
+<!--              <b>Capacity</b>-->
+<!--              <span class="badge badge-info" style="padding: 10px">-->
+<!--              {{equb.capacity}}-->
+<!--              </span>-->
+<!--            </li>-->
+<!--          </ul>-->
+<!--          <div class="progress" >-->
+<!--                <div class="progress-bar bg-info" role="progressbar" style="width: {{equb.balance_manager.percent_completed}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>-->
+<!--              </div>-->
+<!--          <div class="card-footer text-muted justify-content-center"-->
+<!--               style="background-color: rgba(200, 200, 200, .6); border-radius: 0 0 10px 10px">-->
+<!--                Received/not-Received-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="tab-pane" id="{{equb.name}}_bid">-->
+<!--          <form action="{% url 'moneypool:add_bid' %}" method="post">-->
+<!--                    {% csrf_token %}-->
+<!--                  <div class="form-group no-border">-->
+<!--                    <input type="text" class="form-control" name="bid_amount"  placeholder="Place Bid %">-->
+<!--                    <input type="hidden" class="form-control" name="equb_name" value="{{equb.name}}">-->
+<!--                  </div>-->
+<!--                  <button type="submit" class="btn btn-primary btn-round">-->
+<!--                      <i class="material-icons"></i>Bid-->
+<!--                  </button>-->
+<!--              </form>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--        </div>-->
+<!--  &lt;!&ndash; End Tabs with icons on Card &ndash;&gt;-->
+
+<!--{% endfor %}-->
+<!--</div>-->
+<!--</div>-->
+<script>
+$('.add-bid-button').click( function(event) {
+    var equb_id = this.id;
+    var amount = $(`.bid-amount.${equb_id}`)[0].value;
+    var data = {csrfmiddlewaretoken: "{{ csrf_token }}", 'equb_id': Number(equb_id), 'bid_amount': Number(amount)};
+
+  event.preventDefault();
+  $.ajax({
+    url : "{% url 'moneypool:add_bid' %}",
+    type : "POST",
+    csrfmiddlewaretoken: "{{ csrf_token }}",
+    data : data,
+    success: function(data){
+        $(`#${equb_id}_highest_bid`)[0].innerText = `${data.highest_bid_amount}%`;
+      },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
+      }
+    });
+  });
+
+      </script>

@@ -1,76 +1,9 @@
 {% extends 'moneypool/new_base.html' %}
 
 {% block content %}
-<button type="button" class="btn btn-primary mr-auto" data-toggle="modal" data-target="#create_equb_modal">
-  Launch demo modal
-</button>
-<!--fade modal-dialog modal-dialog-centered modal-dialog-scrollable-->
-<!-- Modal -->
-<div class="modal " id="create_equb_modal"
-     tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-     >
-  <div class="modal-dialog" role="document">
-    <div class="modal-content" style="background-color: black;
+<script>
 
-   top: 200px;
-    left: 200px;
-   width:700px;
-   ">
-<!--      <div class="modal-header">-->
-<!--        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>-->
-<!--        <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--          <span aria-hidden="true">&times;</span>-->
-<!--        </button>-->
-<!--      </div>-->
-      <div class="modal-body" style="padding: 50px 50px 50px 50px" >
- <script>
- window.onload = function () {
-     var listBox = document.querySelector('smart-list-box');
-     listBox.selectionMode = 'zeroOrMany';
- }
- </script>
-<form>
-    <div class="row">
-    <div class="col-md-6">
-    <smart-list-box  id="first">
-    <smart-list-item value="1">value</smart-list-item>
-         <smart-list-item value="2">value</smart-list-item>
-         <smart-list-item value="3">value</smart-list-item>
-         <smart-list-item value="4">value</smart-list-item>
-  <smart-list-item value="1">value</smart-list-item>
-         <smart-list-item value="2">value</smart-list-item>
-         <smart-list-item value="3">value</smart-list-item>
-         <smart-list-item value="4">value</smart-list-item>
-  <smart-list-item value="1">value</smart-list-item>
-         <smart-list-item value="2">value</smart-list-item>
-         <smart-list-item value="3">value</smart-list-item>
-         <smart-list-item value="4">value</smart-list-item>
- </smart-list-box>
-    </div>
-    <div class="col-md-6">
-<smart-list-box  id="listbox">
-    <smart-list-item value="1">value</smart-list-item>
-         <smart-list-item value="2">value</smart-list-item>
-         <smart-list-item value="3">value</smart-list-item>
-         <smart-list-item value="4">value</smart-list-item>
-  <smart-list-item value="1">value</smart-list-item>
-         <smart-list-item value="2">value</smart-list-item>
-         <smart-list-item value="3">value</smart-list-item>
-         <smart-list-item value="4">value</smart-list-item>
-  <smart-list-item value="1">value</smart-list-item>
-         <smart-list-item value="2">value</smart-list-item>
-         <smart-list-item value="3">value</smart-list-item>
-         <smart-list-item value="4">value</smart-list-item>
- </smart-list-box>
-        </div>
-        </div>
-    </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
+  changeTabTo("{{current_tab}}")
+
+</script>
 {% endblock %}
