@@ -14,3 +14,18 @@ def print_time(time_obj):
             return f'{hrs} hr{"s" if hrs > 1 else ""} {str(mins) + " min" if mins else ""}{"s" if mins > 1 else ""}'
     else:
         return f' {int(days)} day' + f'{"s" if days > 1 else ""}'
+
+
+def sums(num, n):
+    if num == 1:
+        return [[1]]
+    else:
+        ans = []
+        for i in range(n, num-n+1):
+            if i > num-i:
+                break
+            for j in sums(num-i, n):
+                j.append(i)
+                ans.append(j)
+        ans.append([num])
+        return ans
