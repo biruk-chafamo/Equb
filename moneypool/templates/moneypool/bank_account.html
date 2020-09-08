@@ -1,4 +1,4 @@
-{% extends 'moneypool/base.html' %}
+{% extends 'moneypool/new_base.html' %}
 {% block content %}
 <form action="{% url 'moneypool:create_client' %}" method="post">
     {% csrf_token %}

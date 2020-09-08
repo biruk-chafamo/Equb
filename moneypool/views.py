@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -58,7 +59,6 @@ def log_out(request):
     return HttpResponseRedirect(reverse('moneypool:index'))
 
 
-@login_required
 def home(request):
     client = request.user.client
 
@@ -73,33 +73,61 @@ def home(request):
     active_equbs = client.equbs.filter(balance_manager__started=True, balance_manager__ended=False)
     approaching_equbs = [equb for equb in active_equbs if equb.balance_manager.next_round_approaching(20)]
 
-    received_outbids = client.received_outbids.all()
-    sent_outbids = client.sent_outbids.all()
-    outbids = received_outbids | sent_outbids
-    outbids.order_by('-date')
-    data = []
-    import math
+    # received_outbids = client.received_outbids.all()
+    # sent_outbids = client.sent_outbids.all()
+    # outbids = received_outbids | sent_outbids
+    # outbids.order_by('-date')
+
     if request.session.get('pinnedEqubID', None):
-        pinned_equb = Equb.objects.get(pk=request.session['pinnedEqubID'])
-        c = len(pinned_equb.bids.all())
+        if Equb.objects.filter(pk=request.session['pinnedEqubID'], balance_manager__ended=False):
+            pinned_equb = Equb.objects.get(pk=request.session['pinnedEqubID'])
+        else:
+            request.session['pinnedEqubID'] = None
+
+    if request.session.get('pinnedEqubID', None) is None:
+        if approaching_equbs:
+            pinned_equb = approaching_equbs[0]
+            request.session['pinnedEqubID'] = pinned_equb.id
+        elif active_equbs:
+            pinned_equb = active_equbs[0]
+            request.session['pinnedEqubID'] = pinned_equb.id
+        else:
+            pinned_equb = None
+
+    logging.warning(request.session.get('pinnedEqubID', None))
+    data = []
+    received = None
+    outbids = None
+    if pinned_equb:
+        outbids = pinned_equb.outbids.all()
+        outbids.order_by('-date')
+
+        if client in pinned_equb.balance_manager.received.all():
+            received = True
+        else:
+            received = False
+
+        bids_count = len(pinned_equb.bids.all())
+
         for idx, bid in enumerate(pinned_equb.bids.all()):
-            data.append([c - idx, int(bid.amount)])
-    else:
-        if active_equbs:
-            c = len(active_equbs[0].bids.all())
-            for idx, bid in enumerate(active_equbs[0].bids.all()):
-                data.append([c - idx, int(bid.amount)])
+            data.append([bids_count - idx, float(bid.amount)])
+        logging.warning(data)
+        logging.warning(pinned_equb.name)
+
 
     context = {
-        "pending": client.equbs.filter(balance_manager__started=False),
+        "pending_equbs": client.equbs.filter(balance_manager__started=False),
         "active_equbs": active_equbs,
         "current_tab": "home_tab",
         'client': client,
         'username': client.user.username,
         'invitations': invitations,
+        'pinned_equb':pinned_equb,
+        'pinned_equb_box_expanded': 'false',
         'outbids': outbids,
-        'sent_outbids': sent_outbids,
-        'received_outbids': received_outbids,
+        'received':received,
+        # 'sent_outbids': sent_outbids,
+        # 'received_outbids': received_outbids,
         'friend_requests': friend_requests,
         'approaching_equbs': approaching_equbs,
         'equb_recs': equb_recs,
@@ -139,49 +167,35 @@ def my_equbs(request):
 # @login_required
 # def add_bid(request):
 #     client = request.user.client
-#     equb = Equb.objects.get(name=request.POST['equb_name'])
-#     bid = equb.bid
 #     if request.method == 'POST':
-#         bid_amount = float(request.POST['bid_amount'])
-#         if not bid.started:
-#             bid.started = True
-#         bid.all_bids[str(request.user.username)] = bid_amount  # registering the bid with username
-#         highest_bid = bid.highest_bid
-#         if highest_bid < bid_amount:
-#             if highest_bid != 0:  # meaning a bid has been made prior to the current bid
-#                 OutBid(sender=client, receiver=bid.highest_bidder, equb=equb).save()
-#             bid.highest_bid = bid_amount
-#             bid.highest_bidder = client
-#         bid.save()
-#         return HttpResponseRedirect(reverse('moneypool:my_equbs'))
+#         equb = Equb.objects.get(pk=int(request.POST['equb_id']))
+#         new_amount = decimal.Decimal(request.POST['bid_amount'])
+#         current_round = equb.balance_manager.finished_rounds + 1
+#         new_bid = Bid(equb=equb, client=client, round=current_round, amount=new_amount)
+#         new_bid.save()
+#         highest_bid = HighestBid.objects.get(equb=equb, round=current_round)
+#         logging.warning(highest_bid.bid.amount)
+#         if not highest_bid.bid:  # if there was no prior highest bid
+#             highest_bid.bid = new_bid
+#             highest_bid.save()
+#
+#         elif highest_bid.bid and new_amount > highest_bid.bid.amount:  # if new bid > previous bid
+#             logging.warning(f"this is ..................... {new_bid.amount}")
+#             outbid = OutBid(
+#                 sender=client,
+#                 sender_bid=new_bid,
+#                 receiver_bid=highest_bid.bid,
+#                 receiver=highest_bid.bid.client,
+#                 equb=equb
+#             )
+#             outbid.save()
+#             logging.warning(outbid)
+#             highest_bid.bid = new_bid
+#             highest_bid.save()
+#
+#         return JsonResponse({'highest_bid_amount': highest_bid.bid.amount})
 #     else:
 #         return HttpResponseRedirect(reverse('moneypool:my_equbs'))
-
-
-@login_required
-def add_bid(request):
-    client = request.user.client
-    if request.method == 'POST':
-        logging.warning(f"this is request {request.POST} {request.POST['equb_id']} {request.POST['bid_amount']}")
-        equb = Equb.objects.get(pk=int(request.POST['equb_id']))
-        new_amount = decimal.Decimal(request.POST['bid_amount'])
-        current_round = equb.balance_manager.finished_rounds + 1
-        new_bid = Bid(equb=equb, client=client, round=current_round, amount=new_amount)
-        new_bid.save()
-        highest_bid = HighestBid.objects.get(equb=equb, round=current_round)
-        logging.warning(highest_bid.bid)
-        if not highest_bid.bid:  # if there was no prior highest bid
-            highest_bid.bid = new_bid
-            highest_bid.save()
-
-        elif highest_bid.bid and new_amount > highest_bid.bid.amount:  # if new bid > previous bid
-            OutBid(sender=client, receiver=highest_bid.bid.client, equb=equb).save()
-            highest_bid.bid = new_bid
-            highest_bid.save()
-
-        return JsonResponse({'highest_bid_amount': highest_bid.bid.amount})
-    else:
-        return HttpResponseRedirect(reverse('moneypool:my_equbs'))
 
 
 @login_required
@@ -215,7 +229,7 @@ def search_equb(request):
         equbs = Equb.objects.filter(name__contains=request.GET['equb_name'], balance_manager__started=False)
         return render(request, 'moneypool/search_results.html', {'equbs': equbs})
     else:
-        return render(request, 'moneypool/search_equb.html')
+        return render(request, 'moneypool/new_home.html')
 
 
 @login_required
@@ -235,7 +249,8 @@ def accept_invite(request):
         client = request.user.client
         equb_id = request.POST.get("equb_id")
         equb = Equb.objects.get(pk=equb_id)
-        client.equbs.add(equb)
+        if not equb.balance_manager.started:
+            client.equbs.add(equb)
         Profit(equb=equb, client=client).save()
         if equb.clients.all().count() >= equb.capacity:
             equb.balance_manager.started = True
@@ -262,6 +277,19 @@ def accept_invite(request):
         return JsonResponse(response)
     else:
         return HttpResponseRedirect(reverse('moneypool:home'))
+
+
+def decline_invite(request):
+    if request.method == 'POST':
+        client = request.user.client
+        equb_id = request.POST.get("equb_id")
+        equb = Equb.objects.get(pk=equb_id)
+        equb_invites = client.received_equbinvites.filter(equb=equb)
+        for invitation in equb_invites:
+            invitation.decline_request()
+            invitation.make_irrelevant()
+        response = {'status': 200}
+        return JsonResponse(response)
 
 
 # ..............include in balance manager model.................
@@ -291,7 +319,9 @@ def invite(request):
         equb = Equb.objects.get(pk=equb_id)
 
         for username in request.POST.getlist('invited[]'):
-            receiver = Client.objects.get(user__username=username)
+            logging.warning(username)
+            logging.warning(type(username))
+            receiver = Client.objects.get(user__username=str(username))
             EqubInvite(sender=sender, equb=equb, receiver=receiver).save()
 
         logging.warning(f'{equb_id} {sender.user.username}')
@@ -304,16 +334,80 @@ def invite(request):
         return HttpResponseRedirect(reverse('moneypool:home'))
 
 
+# @login_required
+# def pin_equb(request):
+#     if request.method == 'POST':
+#         logging.warning(request.POST)
+#         pinned_equb_id = int(request.POST.get('pinnedEqubID'))
+#         request.session['pinnedEqubID'] = request.POST.get('pinnedEqubID')
+#         logging.warning("this is"+str(request.session['pinnedEqubID']))
+#         pinned_equb = Equb.objects.get(pk=pinned_equb_id)
+#         highest_bid_amount = pinned_equb.get_highest_bid()
+#
+#         data = []
+#         c = len(pinned_equb.bids.all())
+#         for idx, bid in enumerate(pinned_equb.bids.all()):
+#             data.append([c - idx, int(bid.amount)])
+#         logging.warning(data)
+#
+#         return JsonResponse({
+#             'graph_data': data,
+#             'pinned_equb_name': str(pinned_equb.name),
+#             'highest_bid_amount': highest_bid_amount})
+
+
 @login_required
 def pin_equb(request):
-    if request.method == 'POST':
-        request.session['pinnedEqubID'] = request.POST.get('pinnedEqub')
-        logging.warning(request.session['pinnedEqubID'])
-        equb = Equb.objects.get(pk=request.session['pinnedEqubID'])
+
+    client = request.user.client
+    if request.is_ajax():
+        pinned_equb_id = int(request.POST.get('pinnedEqubID'))
+        request.session['pinnedEqubID'] = request.POST.get('pinnedEqubID')
+    else:
+        pinned_equb_id = request.session.get('pinnedEqubID', None)
+    active_equbs = client.equbs.filter(balance_manager__started=True, balance_manager__ended=False)
+
+    pinned_equb = None
+    data = []
+    received = None
+    outbids = None
+
+    if pinned_equb_id and Equb.objects.filter(pk=pinned_equb_id):
+
+        pinned_equb = Equb.objects.get(pk=pinned_equb_id)
+
+        outbids = pinned_equb.outbids.all()
+        outbids.order_by('-date')
+        if client in pinned_equb.balance_manager.received.all():
+            received = True
+        else:
+            received = False
 
         data = []
-        c = len(equb.bids.all())
-        for idx, bid in enumerate(equb.bids.all()):
-            data.append([c - idx, int(bid.amount)])
+        c = len(pinned_equb.bids.all())
+        for idx, bid in enumerate(pinned_equb.bids.all()):
+            data.append([c - idx, float(bid.amount)])
         logging.warning(data)
-        return JsonResponse({'data': data})
+
+    context = {
+        'client': client,
+        'active_equbs': active_equbs,
+        'pinned_equb': pinned_equb,
+        'pinned_equb_box_expanded': 'true',
+        'received': received,
+        'outbids': outbids,
+        'data': data
+    }
+
+    if request.is_ajax():
+        html = render_to_string('moneypool/pinned_equb_box.html', context, request)
+        logging.warning("this is" + str(request.session['pinnedEqubID']))
+        return HttpResponse(html)
+    else:
+        return render(request, 'moneypool/mobile_pinned_equb.html', context)
+
+
+
+@login_required
+def trial(request):
+    return render(request, 'moneypool/trial.html')

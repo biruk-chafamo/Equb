@@ -1,0 +1,122 @@
+<div class="container" >
+        <div class="card" style="background-color: rgba(191, 191, 191, 1);width:100%; margin: 10px;
+       box-shadow:none; padding: 0px 5px 0px 5px;">
+            <div class="card-body " style="margin: 0px; padding-left:0px; padding-right:0px">
+
+
+
+
+
+
+                <input class="form-control" id="equb_invitations_listSearch" type="text" placeholder="Search invitations">
+                {% if invitations%}
+
+                    <ul class="list-group list-group-flush" id="equb_invitations" style="
+                height: 225px;
+                margin: 0px;
+
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;">
+                    <script>
+                        $(document).ready(function(){
+                        $("#equb_invitations_listSearch").on("keyup", function() {
+                        var value = $(this).val().toLowerCase();
+                        $("#equb_invitations li").filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                        });
+                        });
+                    });</script>
+
+
+                {% for invite in invitations %}
+
+                     <li class="list-group-item invites {{invite.equb.id}} border-bottom"
+                         style="display:block; padding: 0px; margin-bottom:5px; ">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p style="margin-top: 10px; margin-bottom: 5px; font-size: 15px"><b>{{invite.equb.name}}</b><br></p>
+                                 <p class="" style="margin-bottom:5px"> by {{invite.sender.user.username}}<br>
+                                  {{invite.date|date:"SHORT_DATE_FORMAT"}} </p>
+
+                                    </div>
+                                </div>
+                         <div class="row content-justify-between">
+
+
+
+                          <div class=" {{invite.equb.id}} col-md-12" style="margin:5px 0px 5px 0px">
+                                 <button class="accept-invite" style=" border: 1px solid rgb(147, 160, 184);border-radius:10px; background-color: rgba(214, 245, 214, .5); margin:0px; height:100%">
+                                     Accept
+                                 </button>
+
+                                 <button class="decline-invite" style=" border: 1px solid rgb(147, 160, 184); border-radius:10px; background-color: rgba(255, 194, 179, .5); margin:0px; height:100%">
+                                     Decline
+                                 </button>
+                              <button class="invite-equb-details" style=" border: 1px solid rgb(147, 160, 184); border-radius:10px; background-color: rgba(157, 213, 237, .5); margin:0px; height:100%">
+                                     Details
+                                 </button>
+                                 </div>
+                              </div>
+
+                     </li>
+                {% endfor %}
+                {% else %}
+
+                        <p style="text-align: center; margin:10px">You have no invitations</p>
+                {% endif%}
+
+            </ul>
+                </div>
+        </div>
+
+
+
+    </div>
+<script>
+$('.accept-invite').click( function(event) {
+    var equb_id = $(this).parent()[0].classList[0];
+
+    var data = {csrfmiddlewaretoken: "{{ csrf_token }}", 'equb_id': Number(equb_id)};
+
+
+  event.preventDefault();
+  $.ajax({
+    type : "POST",
+    url : "{% url 'moneypool:accept_invite' %}",
+    csrfmiddlewaretoken: "{{ csrf_token }}",
+    data : data,
+    success: function(){
+        $(`li.invites.${equb_id}`).remove();
+      },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
+      }
+    });
+  });
+
+      </script>
+
+<script>
+$('.decline-invite').click( function(event) {
+    var equb_id = $(this).parent()[0].classList[0];
+
+    var data = {csrfmiddlewaretoken: "{{ csrf_token }}", 'equb_id': Number(equb_id)};
+
+
+  event.preventDefault();
+  $.ajax({
+    type : "POST",
+    url : "{% url 'moneypool:decline_invite' %}",
+    csrfmiddlewaretoken: "{{ csrf_token }}",
+    data : data,
+    success: function(){
+        $(`li.invites.${equb_id}`).remove();
+      },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
+      }
+    });
+  });
+
+      </script>

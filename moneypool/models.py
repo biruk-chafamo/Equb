@@ -19,6 +19,9 @@ class Client(models.Model):
     def __str__(self):
         return str(self.user.username)
 
+    def get_rating(self):
+        return (self.rating/5)*100
+
 
 class Equb(models.Model):
     name = models.CharField(max_length=150, unique=True, null=True)
@@ -41,7 +44,13 @@ class Equb(models.Model):
         if highest_bid.bid:
             return highest_bid.bid.amount
         else:
-            return 0
+            return decimal.Decimal('0.00')
+
+    def creator_name(self):
+        return str(self.creator.user.username)
+
+    def print_highest_bid(self):
+        return str(self.get_highest_bid())
 
     def notify_friends(self):  # should only be called if self.private == True
         rec = EqubRecommendation(sender=self.creator, equb=self)
@@ -78,6 +87,9 @@ class BalanceManager(models.Model):
 
     def current_spots(self):
         return self.equb.capacity - self.equb.clients.count()
+
+    def current_round(self):
+        return self.finished_rounds + 1
 
     def time_delta(self):  # time till next round
         cycle = self.equb.cycle
@@ -208,16 +220,60 @@ class Bid(models.Model):
     date = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ['-amount']
-
-    def get_round(self):
-        return str(self.round)
+        ordering = ['-round', '-amount']
 
     def __str__(self):
         return str(self.client.user.username) + ' to ' + str(self.equb.name) + ' round ' + str(self.round)
 
+    def get_round(self):
+        return str(self.round)
+
+    @classmethod
+    def new_bid(cls, client, equb, bid_amount):
+        current_round = equb.balance_manager.finished_rounds + 1
+        bid = Bid(equb=equb, client=client, round=current_round, amount=bid_amount)
+        bid.save()
+        return bid
+
+    def is_highest_bid(self):
+        highest_bid = HighestBid.objects.get(equb=self.equb, round=self.round)
+        if not highest_bid.bid or (highest_bid.bid and self.amount > highest_bid.bid.amount):
+            return True
+        else:
+            return False
+
+    def make_highest_bid(self):
+        highest_bid = HighestBid.objects.get(equb=self.equb, round=self.round)
+
+        # if highest_bid is always true but highest_bid.bid may not be
+        if highest_bid.bid:  # if there was a prior highest bid
+            OutBid(
+                sender=self.client,
+                sender_bid=self,
+                receiver=highest_bid.bid.client,
+                receiver_bid=highest_bid.bid,
+                equb=self.equb
+            ).save()
+        else:
+            OutBid(
+                sender=self.client,
+                sender_bid=self,
+                receiver=None,
+                receiver_bid=None,
+                equb=self.equb
+            ).save()
+
+        highest_bid.bid = self
+        highest_bid.save()
+
 
 class HighestBid(models.Model):
+
+    """
+    highest bid object is always created whenever an equb is created in create_equb view.
+    However the bid attribute is set to null.
+    """
+
     equb = models.ForeignKey(to=Equb, on_delete=models.CASCADE, related_name='highest_bids')
     bid = models.OneToOneField(to=Bid, on_delete=models.SET_NULL, null=True, blank=True)
     round = models.PositiveIntegerField()
@@ -275,7 +331,7 @@ class Profit(models.Model):
     amount = models.DecimalField(max_digits=15, decimal_places=3, default=0)
 
     def __str__(self):
-        return str(self.client.user.username) + ' bidding' ' profit from ' + str(self.equb.name) + ' bidding'
+        return f"{self.client.user.username}'s profit from bidding"
 
 
 # ......................The section below consists of Informational models such as requests ......................
@@ -298,6 +354,10 @@ class Request(models.Model):
 
     def accept_request(self):
         self.accepted = True
+        self.save()
+
+    def decline_request(self):
+        self.accepted = False
         self.save()
 
     class Meta:
@@ -343,16 +403,37 @@ class OutBid(Request):  # this is a Request subclass because sender outbids, and
     Outbids are created in the add_bid view when one equb member outbids another.
     All outbids are made irrelevant by the balance manager when a new equb round starts.
     """
+    receiver = models.ForeignKey(to=Client, null=True, on_delete=models.CASCADE, related_name='received_outbids')
+    receiver_bid = models.ForeignKey(to=Bid, null=True, on_delete=models.SET_NULL, related_name='received_outbids_bids')
+    sender_bid = models.ForeignKey(to=Bid, null=True, on_delete=models.SET_NULL, related_name='sent_outbids_bids')
     accepted = None
 
-
     def sender_message(self):
-        message = f"you outbid {self.receiver.user.username} in {self.equb.name}"
+        if self.receiver is None:
+            message = f"you started the bid at {self.sender_bid.amount}%"
+        else:
+            message = f"you outbid {self.receiver.user.username} to {self.sender_bid.amount}%"
         return message
 
     def receiver_message(self):
-        message = f"{self.sender.user.username} outbid you in {self.equb.name}"
+        message = f"{self.sender.user.username} outbid you to {self.sender_bid.amount}%"
         return message
+
+    def observer_message(self):
+        if self.receiver is None:
+            message = f"{self.sender.user.username} started the bid at {self.sender_bid.amount}%"
+        else:
+            message = f"{self.sender.user.username} outbid {self.receiver.user.username} to {self.sender_bid.amount}%"
+        return message
+
+    def observer_raise_message(self):
+        message = f"{self.sender.user.username} raised their bid to {self.sender_bid.amount}%"
+        return message
+
+    def self_raise_message(self):
+        message = f"you raised your bid to {self.sender_bid.amount}%"
+        return message
+
 #
 #
 # class SplitEqub(models.Model):

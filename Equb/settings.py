@@ -25,7 +25,7 @@ SECRET_KEY = 'j)rvatt2&ku!*x&s)4z)#a_1+pws(lv04cas3rq6wz$o78^j*g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.188', '127.0.0.1' ]
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -76,6 +77,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Equb.wsgi.application'
 
+ASGI_APPLICATION = "Equb.routing.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

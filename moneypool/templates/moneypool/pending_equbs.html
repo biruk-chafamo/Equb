@@ -1,6 +1,6 @@
 
 <div class="card-deck">
-{% for equb in pending_equbs|slice:"0:3" %}
+{% for equb in pending_equbs%}
     <div class="col-md-4">
   <div class="card card-nav-tabs" style=" margin-left: 0px; margin-right: 0px; box-shadow:2px 2px 2px grey;
   margin-bottom: 20px; border-radius:20px 20px 20px 20px; background-color: rgba(200, 200, 200, .6);">
@@ -26,22 +26,19 @@
       <div class="tab-content text-center">
         <div class="tab-pane active" id="{{equb.id}}_status">
           <ul class="list-group list-group-flush" >
-            <li class="list-group-item d-flex justify-content-between align-items-center"
-              style="background-color: rgba(102, 102, 102, 0.6)">
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark border-bottom">
               <b>Amount</b>
-              <span class="badge badge-lg badge-success"
-                style="padding: 10px">${{equb.value}}</span>
+              <span class="badge badge-lg badge-success">${{equb.value}}</span>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
+             <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark border-bottom">
               <b>Cycle</b>
-              <span class="badge badge-dark" style="padding: 10px">
+              <span class="badge badge-dark" >
               {{equb.get_cycle}}
               </span>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center"
-              style="background-color: rgba(230, 230, 230);">
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark border-bottom">
               <b>Capacity</b>
-              <span class="badge badge-info" style="padding: 10px">
+              <span class="badge badge-info">
               {{equb.capacity}}
               </span>
             </li>
@@ -51,7 +48,7 @@
           </div>
           <div class="card-footer text-muted justify-content-center"
                style="background-color: rgba(200, 200, 200, .6); border-radius: 0 0 10px 10px">
-            {{equb.balance_manager.current_spots}} spot/s remaining
+            {{equb.balance_manager.current_spots}} spot{{ equb.balance_manager.current_spots|pluralize}} left
           </div>
         </div>
         <div class="tab-pane" id="{{equb.id}}_invite">
@@ -59,7 +56,7 @@
 
           <div class="container" >
   <input class="form-control" id="{{equb.id}}_listSearch" type="text" placeholder="Search Friends">
-<form>
+
   <ul class="list-group" id="{{equb.id}}_myList" style="
                 height: 159px;
                 max-width: 350px;
@@ -89,7 +86,7 @@ $(document).ready(function(){
     </li>
     {% endfor %}
   </ul>
-  </form>
+
 </div>
             <button type="submit" class="{{equb.id}} invite_button btn btn-primary btn-round">
             <i class="  material-icons  "></i>Invite
@@ -108,118 +105,51 @@ $(document).ready(function(){
 </div>
 
 
+<script>
 
-<div class="collapse " style="padding:0px" id="remaining_equb">
-  <div class="card-deck">
-{% for equb in pending_equbs|slice:"3::" %}
-    <div class="col-md-4">
-  <div class="card card-nav-tabs" style=" margin-left: 0px; margin-right: 0px; box-shadow:2px 2px 2px grey;
-  margin-bottom: 20px; border-radius:20px 20px 20px 20px; background-color: rgba(200, 200, 200, .6);">
-    <div class=" card-header" style="border-radius:10px 10px 0px 0px; background-color: rgb(123, 168, 183)">
-      <div class="  nav-tabs-navigation">
-        <div class="  nav-tabs-wrapper">
-          <ul class="  nav nav-tabs"  data-tabs="tabs">
-            <li class="  nav-item" >
-              <a class=" nav-link active" href="#{{equb.id}}_status" data-toggle="tab">
-              {{equb.name}}
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#{{equb.id}}_invite" data-toggle="tab">
-              Invite
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="card-body" style="padding: 4px">
-      <div class="tab-content text-center">
-        <div class="tab-pane active" id="{{equb.id}}_status">
-          <ul class="list-group list-group-flush" >
-            <li class="list-group-item d-flex justify-content-between align-items-center"
-              style="background-color: rgba(102, 102, 102, 0.6)">
-              <b>Amount</b>
-              <span class="badge badge-lg badge-success"
-                style="padding: 10px">${{equb.value}}</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
-              <b>Cycle</b>
-              <span class="badge badge-dark" style="padding: 10px">
-              {{equb.get_cycle}}
-              </span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center"
-              style="background-color: rgba(230, 230, 230);">
-              <b>Capacity</b>
-              <span class="badge badge-info" style="padding: 10px">
-              {{equb.capacity}}
-              </span>
-            </li>
-          </ul>
-          <div class="progress" >
-            <div class="progress-bar bg-info" role="progressbar" style="width: {{equb.balance_manager.percent_joined}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <div class="card-footer text-muted justify-content-center"
-               style="background-color: rgba(200, 200, 200, .6); border-radius: 0 0 10px 10px">
-            {{equb.balance_manager.current_spots}} spot/s remaining
-          </div>
-        </div>
-        <div class="tab-pane" id="{{equb.id}}_invite">
+$('.invite_to_equb' ).click(function() {
+  $( this ).toggleClass( 'invite_yes' );
+});
 
 
-          <div class="container" >
-  <input class="form-control" id="{{equb.id}}_listSearch" type="text" placeholder="Search Friends">
-<form>
-  <ul class="list-group" id="{{equb.id}}_myList" style="
-                height: 159px;
-                max-width: 350px;
-                margin: 0px;
-                overflow: overlay;
-                overflow-x: hidden;
-                -webkit-overflow-scrolling: touch;">
-    {% for friend in client.friends.all %}
-                <script>
-$(document).ready(function(){
-  $("#{{equb.id}}_listSearch").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#{{equb.id}}_myList li").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
+$('.invite_button').click( function(event) {
+    event.preventDefault();
+    var equb_id = this.classList[0];
+    var invitees = $(`.invite_to_equb.${equb_id}.invite_yes`);
+    var data = {csrfmiddlewaretoken: "{{ csrf_token }}", 'equb_id': Number(equb_id), 'invited':[]};
+    for (let invitee of invitees) {
+        data['invited'].push(invitee.innerText);
+    }
+
+
+  $.ajax({
+    type : "POST",
+    url : "http://127.0.0.1:8000/moneypool/invite",
+    csrfmiddlewaretoken: "{{ csrf_token }}",
+    data : data,
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
+      }
   });
-});</script>
-    <li class="list-group-item justify-content-between align-items-center invite_to_equb {{equb.id}}"
-        style="{% cycle 'background-color: rgba(204, 204, 204, .3)' 'background-color: rgba(230, 230, 230, .2)' %}">
-                  {{friend.user.username}}
-                                <img src="../../static/moneypool/someimg.png"
-                  alt="Avatar" class="avatar"
-                  style="vertical-align: middle;
-                  width: 30px;
-                  height: 30px;
-                  border-radius: 50%;" align="right"/>
-    </li>
-    {% endfor %}
-  </ul>
-  </form>
-</div>
-            <button type="submit" class="{{equb.id}} invite_button btn btn-primary btn-round">
-            <i class="  material-icons  "></i>Invite
-            </button>
+});
 
 
+</script>
 
-        </div>
-      </div>
-    </div>
-  </div>
-        </div>
-  <!-- End Tabs with icons on Card -->
+<!--<script>-->
 
-{% endfor %}
-</div>
-</div>
-
-
-
-
+<!--$('.live-equb').change( function () {-->
+<!--   var pinnedEqubID = $('.live-equb option:selected')[0].value;-->
+<!--&lt;!&ndash;   $('.test-live').append(pinnedEqubID);&ndash;&gt;-->
+<!--   event.preventDefault();-->
+<!--  $.ajax({-->
+<!--    type : "POST",-->
+<!--    url : "{% url 'moneypool:pin_equb' %}",-->
+<!--    data : {csrfmiddlewaretoken: "{{ csrf_token }}",'pinnedEqubID': Number(pinnedEqubID)},-->
+<!--    error: function(XMLHttpRequest, textStatus, errorThrown) {-->
+<!--      alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));-->
+<!--      }-->
+<!--    });-->
+<!--  });-->
+<!--</script>-->
 

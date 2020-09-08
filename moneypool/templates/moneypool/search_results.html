@@ -1,10 +1,43 @@
-{% extends 'moneypool/base.html' %}
+{% extends 'moneypool/new_base.html' %}
 {% block content %}
-<ul>
-    {% for equb in equbs %}
-        <li>
-            <a href="{% url 'moneypool:join_equb' equb.name %}">{{equb.name}}</a>
-        </li>
-    {% endfor %}
-</ul>
+<div class="container ">
+    <div class="row justify-content-center">
+   <div class="col-12 ">
+    {% if equbs %}
+        {% for equb in equbs %}
+                <div class="row justify-content-between" style="
+            width:100%;border-radius: 5px; margin-bottom:10px;
+            padding: 20px; background-color: rgb(230, 230, 230);
+            box-shadow:3px 3px 3px grey;">
+                    <div class="col-8">
+                        <div class="row justify-content-start">
+                            <h4>{{equb.name}}</h4>
+                        </div>
+                         <div class="row justify-content-start text-muted">
+                             <h6>created on {{equb.creation_date|date:"SHORT_DATE_FORMAT"}}</h6>
+                        </div>
+                        <div class="row justify-content-start text-muted">
+                            <h6>{{equb.balance_manager.current_spots}} spots left</h6>
+                        </div>
+                    </div>
+
+
+                <div class="col-3">
+                <a class="btn" href="{% url 'moneypool:join_equb' equb.name %}" style="  position:absolute;
+  right: 10px;
+  bottom: 10px;
+border-radius: 0px, 50px, 50px, 0px;">
+                    join
+                </a>
+                </div>
+                </div>
+        {% endfor %}
+       {% else %}
+            <div class="row justify-content-center">
+                No results were found
+            </div>
+       {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}}

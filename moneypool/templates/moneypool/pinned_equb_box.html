@@ -1,0 +1,391 @@
+
+<div  id="pinned_equb_box" style="width:100%; ">
+
+
+        <div class=" card-body" style=" width:100%; background-color: rgb(230, 230, 230);  margin: 10px;
+      box-shadow:3px 3px 3px grey; border-radius: 10px; padding: 0px 5px 0px 5px;" id="entire_pinned_equb_collapse" >
+            <div class="row card-body justify-content-end pinned_equb_toggle"
+                  style="margin: 0px; padding: 2px">
+                <i class="bx bx-icon" id="pinned_equb_arrow"></i>
+            </div>
+
+
+            <div class="row card-body justify-content-between" style="width:100%; margin: 0px; padding: 20px 10px 5px 5px">
+
+
+
+                {% if active_equbs %}
+
+
+                 <h6 class=" ">
+                     <i class="bx bx-icon bx-pin"></i>
+
+                         <select class=" live-equb hiddenOverflow"  style=" width:100px; padding: 1px 10px 1px 10px; box-shadow: 2px 2px 2px grey; border: 0px; background-color: rgba(300, 168, 183, 0.1)">
+                            {% for equb in active_equbs %}
+                            <option width="150px" value="{{equb.id}}">
+                                {{equb.name}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                     <i class="bx bx-icon bx-trend-up"></i>
+                     <span id="highest_bid_amount" style="padding: 1px 10px 1px 10px;">{{pinned_equb.print_highest_bid}}%</span>
+
+
+                     <script>
+                        $("select option[value='{{pinned_equb.id}}']").attr("selected","selected");
+                     </script>
+                 </h6>
+
+                 <h6>
+                     {% if  received%}
+                        received
+                     {% else %}
+                <form class="form-inline" style="padding: 0px; margin: 0px ">
+                    <h6 class=" "> <i></i></h6>
+<!--                    <div style="padding: 1px 10px 1px 10px; box-shadow: 2px 2px 2px grey; border: 0px; background-color: rgba(300, 168, 183, 0.1)">-->
+                    <input  id="bid-amount" class="form-control" style="width: 100px; padding: 1px 0px 1px 10px; margin: 0px; background-color: rgba(300, 168, 183, 0.05) " type="number" placeholder="enter bid">
+<!--                        </div>-->
+                     <button id="add-bid-button" style="margin: 0px 0px 0px 5px; padding: 1px 10px 1px 10px ; box-shadow: 2px 2px 2px grey; border: 0px; background-color: rgba(300, 168, 183, 0.2)" type="submit">bid</button>
+
+                 </form>
+                     {% endif %}
+                 </h6>
+                {% else %}
+                 <div class="col-12 justify-content-center" style="text-align:center"><i class="bx bx-icon bx-error-circle"></i> You have no active equbs</div>
+             {% endif %}
+            </div>
+
+
+
+
+
+
+            <div class="  card-body " style="  padding:0px;"  id="pinned_equb_collapse">
+                 <div id="graph" style="margin: 0px">
+                     <script>
+
+function bidGraph(data) {
+    var container
+    var svg
+    var g
+    var linePath
+
+    var xScale = d3.scaleLinear()
+    var yScale = d3.scaleLinear()
+
+    var xExtent
+    var yExtent
+
+    var width
+    var height
+
+    var line = d3.line()
+      .x(function (d) {
+        return xScale(d[0])
+      })
+      .y(function (d) {
+        return yScale(d[1])
+      })
+
+    var chartData
+<!--    -->
+<!--    var data = {{data}}-->
+    function bakeChart () {
+      container = d3.select('#graph')
+        .append("div")
+        .attr('id', 'container')
+
+      svg = container
+        .append("svg")
+
+      g = svg
+        .append('g')
+
+
+      linePath = g
+        .append('path')
+        .classed('line', true)
+        .datum(chartData)
+    }
+
+    function setValues () {
+      var bbox = container.node().getBoundingClientRect()
+
+      yExtent = d3.extent(chartData, function (d) {
+        return d[1]
+      })
+      xExtent = d3.extent(chartData, function (d) {
+        return d[0]
+      })
+
+      width = bbox.width
+      height = bbox.height
+
+      xScale.domain(xExtent)
+        .range([0, width])
+
+      yScale.domain(yExtent)
+        .range([height, 0])
+    }
+
+    function renderChart () {
+      svg.attr("width", width)
+        .attr("height", height)
+
+      linePath
+        .attr('d', line)
+    }
+
+    function onResize () {
+      setValues(chartData)
+      renderChart(chartData)
+    }
+
+    loadData('my/data.json', function (d) {
+      chartData = d
+      bakeChart()
+      setValues()
+
+      renderChart()
+    })
+
+    window.addEventListener('resize', onResize)
+
+    function loadData (str, cb) {
+      cb(data)
+    }
+}
+</script>
+   <script>
+bidGraph({{data}})
+	</script>
+
+                </div>
+                <ul class="nav nav-tabs nav-fill" >
+                    <li class="nav-item"  >
+                        <a class="nav-link active" href="#pinned-equb-details" role="tab" data-toggle="tab" style="  padding:5px;">Details</a>
+                    </li>
+                    <li class="nav-item" style="  padding:0px;" >
+                        <a class="nav-link"  href="#outbids-info" role="tab" data-toggle="tab" style="  padding:5px;">activity</a>
+                    </li>
+                </ul>
+</ul>
+
+
+
+
+            <div class="tab-content tab-space ">
+    <div class="tab-pane " id="outbids-info">
+        {% if pinned_equb %}
+
+                    <ul class="list-group list-group-flush" style="
+                height: 200px;
+
+                margin: 0px;
+                overflow: overlay;
+                overflow-x: hidden;s
+                -webkit-overflow-scrolling: touch;">
+                        {% if outbids%}
+
+                    {% for outbid in outbids %}
+
+                     <li class="list-group-item {{outbid.equb.id}} border-bottom"
+                         style="display: block; width:100%; padding: 0px 0px 0px 10px;
+                         background-color:
+                         {% if outbid.sender == client and outbid.receiver != client %}
+                            rgba(214, 245, 214, .6)
+                         {% elif outbid.receiver == client and outbid.sender != client%}
+                            rgba(255, 194, 179, .6)
+                         {% else %}
+                            rgb(205, 205, 205)
+                         {% endif %};">
+
+                         <div>
+                                 <p style="margin-top: 10px; margin-bottom: 0px; font-size: 15px">
+                                     {% if outbid.sender == client and outbid.receiver != client %}
+                                     {{outbid.sender_message}}
+                                     {% elif outbid.receiver == client and outbid.sender != client %}
+                                     {{outbid.receiver_message}}
+                                     {% elif outbid.receiver == outbid.sender and outbid.sender == client %}
+                                     {{outbid.self_raise_message}}
+                                     {% elif outbid.receiver == outbid.sender %}
+                                     {{outbid.observer_raise_message}}
+                                     {% else %}
+                                     {{outbid.observer_message}}
+                                     {% endif %}
+                                     <br>
+
+                                 </p>
+                                 <p class="" style="margin-bottom:3px">
+                                    round {{outbid.sender_bid.round}}
+                                 <br>
+                                     {{outbid.date|date:"SHORT_DATE_FORMAT"}}
+                                 </p>
+
+                             </div>
+
+                     </li>
+                {% endfor %}
+                        {% else %}
+                            <p style="text-align: center;">There are no activities so far</p>
+                        {% endif %}
+
+            </ul>
+
+        {% endif %}
+            </div>
+
+    <div class="tab-pane active" id="pinned-equb-details">
+        {% if pinned_equb %}
+
+            <ul class="list-group list-group-flush" style="
+                height: 200px;
+
+                margin: 0px;
+                overflow: overlay;
+                overflow-x: hidden;s
+                -webkit-overflow-scrolling: touch;">
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark border-bottom">
+                Amount<b></b>
+              <span class="badge badge-lg badge-success">${{pinned_equb.value}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark border-bottom">
+                Next Round<b></b>
+                <span class="badge badge-primary">{{pinned_equb.balance_manager.print_delta}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark border-bottom">
+              Capacity<b></b>
+              <span class="badge badge-lg badge-info">
+              {{pinned_equb.capacity}}
+              </span>
+            </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-dark">
+              Round<b></b>
+              <span class="badge badge-lg badge-info">
+              {{pinned_equb.balance_manager.current_round}} of {{pinned_equb.capacity}}
+              </span>
+            </li>
+
+
+                <div>
+                    <div class="progress" >
+            <div class="progress-bar bg-info" role="progressbar" style="width: {{pinned_equb.balance_manager.percent_completed}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+                </div>
+
+
+
+          </ul>
+        {% endif%}
+
+    </div>
+
+            </div>
+
+
+        </div>
+    </div>
+<script>
+                function getDeviceDimension() {
+                    return {
+                        width: $(window).width()
+                    };
+                }
+                var dd = getDeviceDimension();
+                if (dd.width < 500) {
+                    $('#pinned_equb_holder').removeClass('justify-content-end');
+                    $('#pinned_equb_holder').removeClass('justify-content-center');
+                    $('#entire_pinned_equb_collapse').addClass("collapse_pinned");
+                    $('#entire_pinned_equb_collapse').css('display','none');
+
+
+                }
+                else {
+                    $('#pinned_equb_collapse').addClass("collapse_pinned");
+                    $('#circle_pin').css('display','none');
+                    if ({{pinned_equb_box_expanded}}==false) {
+                        $('#pinned_equb_collapse').css('display','none');
+                    }
+
+
+                }
+
+                if ($(".collapse_pinned").css('display')=='block') {
+                    $('#pinned_equb_arrow').addClass("bx-minus");
+                    $('#pinned_equb_arrow').removeClass("bx-plus");
+                }
+                else {
+                     $('#pinned_equb_arrow').addClass("bx-expand");
+                     $('#pinned_equb_arrow').removeClass("bx-minus");
+                }
+               $('.pinned_equb_toggle').click(function () {
+                    var dd = getDeviceDimension();
+                    if (dd.width < 500) {
+                        window.location.replace("{% url 'moneypool:pin_equb' %}");
+                    }
+                    else {
+                        $('#pinned_equb_arrow').toggleClass("bx-expand");
+                        $('#pinned_equb_arrow').toggleClass("bx-minus");
+
+                        $('.collapse_pinned').toggle();
+                    }
+
+
+                    })
+                </script>
+
+<script>
+
+$('.live-equb').change( function (event) {
+   var pinnedEqubID = $('.live-equb option:selected')[0].value;
+   event.preventDefault();
+  $.ajax({
+    type : "POST",
+    url : "{% url 'moneypool:pin_equb' %}",
+    dataType: "html",
+    data : {csrfmiddlewaretoken: "{{ csrf_token }}",'pinnedEqubID': Number(pinnedEqubID)},
+    cache: false,
+    success: function (data) {
+
+        $('#pinned_equb_box').remove();
+        $('#pinned_equb_holder').append(data);
+
+
+
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
+      }
+    });
+
+
+
+  });
+</script>
+
+
+
+<script>
+
+    $('#add-bid-button').click( function(event) {
+                event.preventDefault();
+                var bid_amount = $('#bid-amount')[0].value;
+
+                chatSocket.send(JSON.stringify({
+                    'bid_amount': bid_amount,
+                }));
+            });
+</script>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
