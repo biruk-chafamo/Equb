@@ -88,7 +88,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [os.environ.get('REDISTOGO_URL')],
+            "hosts": ['redis://redistogo:ccda281bf647bc24719c042964bec476@scat.redistogo.com:10845'],
         },
     },
 }
