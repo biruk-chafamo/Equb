@@ -20,14 +20,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'j)rvatt2&ku!*x&s)4z)#a_1+pws(lv04cas3rq6wz$o78^j*g'
-
+# # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY='j)rvatt2&ku!*x&s)4z)#a_1+pws(lv04cas3rq6wz$o78^j*g'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# ALLOWED_HOSTS = ['192.168.0.188', '127.0.0.1' ]
-ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -177,9 +177,9 @@ USE_S3 = True
 
 if USE_S3:
     # aws settings
-    AWS_ACCESS_KEY_ID = 'AKIAX6IK5CZZHC4ZKO4G'
-    AWS_SECRET_ACCESS_KEY = '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'
-    AWS_STORAGE_BUCKET_NAME = 'equb-finance-static'
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
     AWS_DEFAULT_ACL = 'public-read'
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
