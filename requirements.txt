@@ -4,6 +4,8 @@ async-timeout==3.0.1
 attrs==19.3.0
 autobahn==20.6.2
 Automat==20.2.0
+boto3==1.16.29
+botocore==1.19.29
 cffi==1.14.0
 channels==2.4.0
 channels-redis==3.0.1
@@ -16,11 +18,13 @@ django-background-tasks==1.2.5
 django-compat==1.0.15
 django-cors-headers==3.4.0
 django-crispy-forms==1.10.0
+django-storages==1.10.1
 gunicorn==20.0.4
 hiredis==1.1.0
 hyperlink==19.0.0
 idna==2.10
 incremental==17.5.0
+jmespath==0.10.0
 msgpack==1.0.0
 psycopg2-binary==2.8.5
 pyasn1==0.4.8
@@ -28,11 +32,14 @@ pyasn1-modules==0.2.8
 pycparser==2.20
 PyHamcrest==2.0.2
 pyOpenSSL==19.1.0
+python-dateutil==2.8.1
 pytz==2020.1
+s3transfer==0.3.3
 service-identity==18.1.0
 six==1.15.0
 sqlparse==0.3.1
 Twisted==20.3.0
 txaio==20.4.1
+urllib3==1.26.2
 whitenoise==5.2.0
 zope.interface==5.1.0

@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'channels',
+    'storages',
+
 ]
 
 MIDDLEWARE = [
@@ -86,10 +88,11 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [os.environ.get('REDIS_URL')],
+            "hosts": [(os.environ.get('REDIS_URL'), 6379)],
         },
     },
 }
+#os.environ.get('REDIS_URL')
 
 # CHANNEL_LAYERS = {
 #     'default': {
@@ -164,11 +167,30 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'moneypool', 'static', 'moneypool')
+# ]
+
+USE_S3 = True
+
+if USE_S3:
+    # aws settings
+    AWS_ACCESS_KEY_ID = 'AKIAX6IK5CZZHC4ZKO4G'
+    AWS_SECRET_ACCESS_KEY = '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'
+    AWS_STORAGE_BUCKET_NAME = 'equb-finance-static'
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    # s3 static settings
+    AWS_LOCATION = 'static'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+else:
+    STATIC_URL = '/staticfiles/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'moneypool', 'static', 'moneypool'),)
 
 LOGIN_URL = '/moneypool/log_in/'
 
