@@ -1,14 +1,59 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>signup</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <form action="{% url 'moneypool:sign_up' %}" method="post">-->
+<!--        {% csrf_token %}-->
+<!--        {{ form.as_p }}-->
+<!--        <input type="submit" value="sign up">-->
+<!--    </form>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nerko+One&subset=cyrillic">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'moneypool/css/log_in.css' %}?{% now 'U' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>signup</title>
 </head>
 <body>
-    <form action="{% url 'moneypool:sign_up' %}" method="post">
+<div class="row">
+<div class="col-5">
+    <div class="logo">
+    <h1><b> Equb Finance </b></h1>
+    <h5 > Save and borrow directly with friends</h5>
+</div>
+
+    </div>
+  <div class="col-5 main">
+      <p class="sign" align="center">Sign Up</p>
+    <form class="form1" action="{% url 'moneypool:sign_up' %}" method="post" >
         {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="sign up">
+        <p  align="center" >
+            <input class="un " placeholder="Username" type="text" name="username" maxlength="150" autocapitalize="none" autocomplete="username" autofocus="" required="" id="id_username">
+        </p>
+        <p  align="center" >
+            <input class="pass" placeholder="Password" type="password" name="password1" autocomplete="new-password" required="" id="id_password1">
+            <span class="helptext"></span>
+        </p>
+        <p  align="center" >
+            <input class="pass" placeholder="Password confirmation" type="password" name="password2" autocomplete="new-password" required="" id="id_password2">
+        </p>
+        <input  align="center" class="sign_up" type="submit" value="Create an Account">
+
+
     </form>
+       <hr>
+        <a  class="log_in" align="center" href="{% url 'moneypool:log_in'%}">Log in</a>
+    </div>
+</div>
 </body>
 </html>

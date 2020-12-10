@@ -437,58 +437,7 @@
     </button>
 
 {% include 'moneypool/pinned_equb_box.html' %}
-{% include 'moneypool/pinned_box_js.html' %}
 
-    {%if pinned_equb%}
-
-    <script>
-
-
-            var chatSocket = new WebSocket(
-                'ws://'
-                + window.location.host
-                + '/ws/moneypool'
-                + '/{{pinned_equb.id}}'
-            );
-
-            chatSocket.onmessage = function(e) {
-<!--                var data = JSON.parse(e.data);-->
-<!--                $('#highest_bid_amount').innerText = `${data.highest_bid_amount}%`;-->
-<!--                var graph_data = data.graph_data;-->
-<!--                $('#graph').empty();-->
-<!--                bidGraph(data);-->
-                var pinnedEqubID = $('.live-equb option:selected')[0].value;
-
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'moneypool:pin_equb' %}",
-                    dataType: "html",
-                    data : {csrfmiddlewaretoken: "{{ csrf_token }}",'pinnedEqubID': Number(pinnedEqubID)},
-
-                    success: function (data) {
-                         $('#pinned_equb_box').remove();
-                         $('#pinned_equb_holder').append(data);
-<!--                         $('#pinned_equb_collapse').addClass('show');-->
-
-
-
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
-                }
-                });
-
-            };
-
-            chatSocket.onclose = function(e) {
-                console.error('Chat socket closed unexpectedly');
-            };
-
-
-
-
-</script>
-    {%endif%}
 
 
 </div>
