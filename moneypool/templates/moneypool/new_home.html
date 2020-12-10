@@ -63,18 +63,18 @@
 
           </a>
 
-       <a class="row nav-item nav-link list-group-item" href="#" style="border-radius: 5px;">
+<!--       <a class="row nav-item nav-link list-group-item" href="#" style="border-radius: 5px;">-->
 
 
-           <span><i class="bx bx-icon bx-group"></i>Friends</span>
+<!--           <span><i class="bx bx-icon bx-group"></i>Friends</span>-->
 
-          </a>
-       <a class="row nav-item nav-link list-group-item" href="#" style="border-radius: 5px;">
+<!--          </a>-->
+<!--       <a class="row nav-item nav-link list-group-item" href="#" style="border-radius: 5px;">-->
 
 
-           <span><i class="bx bx-icon bx-horizontal-center"></i>Split</span>
+<!--           <span><i class="bx bx-icon bx-horizontal-center"></i>Split</span>-->
 
-          </a>
+<!--          </a>-->
 
         </div>
 
@@ -175,7 +175,6 @@
 
 {% if approaching_equbs%}
   <div class="row horizontal-scroll justify-content-start " style="
-
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -242,7 +241,6 @@
 
 {% if pending_equbs%}
   <div class="row horizontal-scroll " style="
-
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -263,8 +261,6 @@
     </div>
     <div class="card-body" style="padding: 4px">
                     <ul class="list-group list-group-flush" style="
-
-
                 margin: 0px;
                 overflow: overlay;
                 overflow-x: hidden;
@@ -323,7 +319,6 @@
 
 {% if equb_recs%}
   <div class="row horizontal-scroll justify-content-start " style="
-
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -344,8 +339,6 @@
     </div>
      <div class="card-body" style="padding: 4px">
                     <ul class="list-group list-group-flush" style="
-
-
                 margin: 0px;
                 overflow: overlay;
                 overflow-x: hidden;
@@ -437,58 +430,7 @@
     </button>
 
 {% include 'moneypool/pinned_equb_box.html' %}
-{% include 'moneypool/pinned_box_js.html' %}
 
-    {%if pinned_equb%}
-
-    <script>
-
-
-            var chatSocket = new WebSocket(
-                'ws://'
-                + window.location.host
-                + '/ws/moneypool'
-                + '/{{pinned_equb.id}}'
-            );
-
-            chatSocket.onmessage = function(e) {
-<!--                var data = JSON.parse(e.data);-->
-<!--                $('#highest_bid_amount').innerText = `${data.highest_bid_amount}%`;-->
-<!--                var graph_data = data.graph_data;-->
-<!--                $('#graph').empty();-->
-<!--                bidGraph(data);-->
-                var pinnedEqubID = $('.live-equb option:selected')[0].value;
-
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'moneypool:pin_equb' %}",
-                    dataType: "html",
-                    data : {csrfmiddlewaretoken: "{{ csrf_token }}",'pinnedEqubID': Number(pinnedEqubID)},
-
-                    success: function (data) {
-                         $('#pinned_equb_box').remove();
-                         $('#pinned_equb_holder').append(data);
-<!--                         $('#pinned_equb_collapse').addClass('show');-->
-
-
-
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert("some error " + String(errorThrown) + String(textStatus) + String(XMLHttpRequest.responseText));
-                }
-                });
-
-            };
-
-            chatSocket.onclose = function(e) {
-                console.error('Chat socket closed unexpectedly');
-            };
-
-
-
-
-</script>
-    {%endif%}
 
 
 </div>
