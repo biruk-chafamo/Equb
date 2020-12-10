@@ -77,7 +77,8 @@ $(document).ready(function(){
     <li class="list-group-item justify-content-between align-items-center invite_to_equb {{equb.id}}"
         style="{% cycle 'background-color: rgba(204, 204, 204, .3)' 'background-color: rgba(230, 230, 230, .2)' %}">
                   {{friend.user.username}}
-                                <img src="../../static/moneypool/someimg.png"
+                                {% load static %}
+        <img src="{% static 'moneypool/someimg.png' %}"
                   alt="Avatar" class="avatar"
                   style="vertical-align: middle;
                   width: 30px;
