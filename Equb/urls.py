@@ -16,6 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 urlpatterns = [
-    path('moneypool/', include('moneypool.urls')),
+    path('', include('moneypool.urls')),
     path('admin/', admin.site.urls),
 ]
