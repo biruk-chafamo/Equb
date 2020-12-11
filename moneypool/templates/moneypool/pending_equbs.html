@@ -125,7 +125,7 @@ $('.invite_button').click( function(event) {
 
   $.ajax({
     type : "POST",
-    url : "http://127.0.0.1:8000/moneypool/invite",
+    url : "{% url 'moneypool:invite' %}",
     csrfmiddlewaretoken: "{{ csrf_token }}",
     data : data,
     error: function(XMLHttpRequest, textStatus, errorThrown) {
