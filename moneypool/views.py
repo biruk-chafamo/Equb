@@ -408,6 +408,12 @@ def pin_equb(request):
 
 
 
-@login_required
 def trial(request):
-    return render(request, 'moneypool/trial.html')
+    return JsonResponse({
+        'name': 'new',
+        'value': 100,
+        'capacity': 2,
+        'period':10,
+        'friend':'sosi',
+        'creationDate': 2019,
+        'private':False,})
