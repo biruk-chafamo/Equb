@@ -21,13 +21,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY='j)rvatt2&ku!*x&s)4z)#a_1+pws(lv04cas3rq6wz$o78^j*g'
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY='j)rvatt2&ku!*x&s)4z)#a_1+pws(lv04cas3rq6wz$o78^j*g'
+# SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
-ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['*', '.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -84,24 +84,24 @@ WSGI_APPLICATION = 'Equb.wsgi.application'
 
 ASGI_APPLICATION = "Equb.routing.application"
 #
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [os.environ.get('REDIS_URL')],
-        },
-    },
-}
-#os.environ.get('REDIS_URL')
-
 # CHANNEL_LAYERS = {
 #     'default': {
 #         'BACKEND': 'channels_redis.core.RedisChannelLayer',
 #         'CONFIG': {
-#             "hosts": [('redis', 6379)],
+#             "hosts": [os.environ.get('REDIS_URL')],
 #         },
 #     },
 # }
+#os.environ.get('REDIS_URL')
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -128,8 +128,8 @@ DATABASES = {
 #     }
 # }
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+# db_from_env = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'].update(db_from_env)
 
 
 # Password validation
@@ -174,7 +174,7 @@ USE_L10N = True
 #     os.path.join(BASE_DIR, 'moneypool', 'static', 'moneypool')
 # ]
 
-USE_S3 = True
+USE_S3 = False
 
 
 
