@@ -6,7 +6,7 @@ The amount paid by the highest bidder is distributed to members of the group who
 previous rounds. 
 
 <h3>Visit Website</h3>
-To view a working version of Equb, go to <a href="https://equbfinance.com/">equb-finance.com</a>
+To view a working version of Equb, go to <a href="https://equbfinance.com/">equbfinance.com</a>
 
 <h3>Docker</h3>
 To run Equb locally on your device with docker, follow the steps below:  
