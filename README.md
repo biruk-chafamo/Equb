@@ -18,9 +18,3 @@ To run Equb locally on your device with docker, follow the steps below:
     <li>run the command: <code>docker-compose build</code></li>
     <li>start the app: <code>docker-compose up</code></li>
 </ul>
-
-## Screenshots
-<div style="display: flex; justify-content: space-between;">
-    <img src="screenshot_2.png" alt="Alt Text" width="500"/>
-    <img src="screenshot_1.png" alt="Alt Text" width="500"/>
-</div>
